@@ -1,0 +1,25 @@
+{
+  "final": {
+    "simulation_time": 502.92564650436725
+  },
+  "additive": {
+    "total_arrivals": 52,
+    "total_good_produced": 51,
+    "total_scrapped": 1,
+    "total_repairs": 5
+  },
+  "discrete": {
+    "mean_time_in_system": 19.71994165118493,
+    "std_time_in_system": 6.49633620535494,
+    "mean_wait_repair": 0.0,
+    "mean_wait_stations": 3.2084424424985207,
+    "scrap_rate": 0.019230769230769232
+  },
+  "continuous": {
+    "mean_repair_queue_len": 0.0,
+    "mean_repair_utilization": 0.0819595680915098,
+    "mean_stations_queue_len": 0.4720871611840316,
+    "mean_stations_busy": 1.4848967467412701,
+    "mean_items_in_system": 2.0389434760168106
+  }
+}

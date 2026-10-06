@@ -1,0 +1,34 @@
+{
+    "simulation_time": 480.0,
+    "with_clearance": true,
+    "rng_seed": 42,
+    "initial_items_count": 0,
+    "trace": false,
+    "mean_arrival_interval": 10.0,
+    "repair_mean_time": 8.0,
+    "repair_std_time": 2.0,
+    "repair_min_time": 1.0,
+    "stations": [
+        {
+            "name": "Station 1",
+            "mean_service_time": 4.0,
+            "std_service_time": 1.0,
+            "min_service_time": 0.5,
+            "defect_probability": 0.08
+        },
+        {
+            "name": "Station 2",
+            "mean_service_time": 5.0,
+            "std_service_time": 1.0,
+            "min_service_time": 0.5,
+            "defect_probability": 0.07
+        },
+        {
+            "name": "Station 3",
+            "mean_service_time": 4.5,
+            "std_service_time": 1.0,
+            "min_service_time": 0.5,
+            "defect_probability": 0.05
+        }
+    ]
+}

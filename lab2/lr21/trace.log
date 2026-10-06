@@ -1,0 +1,519 @@
+======================================================================
+ЛАБОРАТОРНАЯ РАБОТА №2.1 (LR21) — КОНТРОЛЬНЫЙ ПРОГОН МОДЕЛИ
+Вариант №1: Станция технического контроля
+Параметры: Время=480.0 мин, Seed=42, Трассировка=True
+======================================================================
+[t=    0.00 min] SIMULATION INITIALIZED.
+[t=   10.20 min] ARRIVAL: Item #1 entered system.
+[t=   10.20 min] INSPECT_START: Item #1 started test at Station 1 (duration=3.50m).
+[t=   10.45 min] ARRIVAL: Item #2 entered system.
+[t=   10.45 min] INSPECT_QUEUE: Item #2 joined queue at Station 1 (queue_len=1).
+[t=   13.70 min] INSPECT_PASS: Item #1 passed Station 1.
+[t=   13.70 min] INSPECT_START: Item #1 started test at Station 2 (duration=4.86m).
+[t=   13.70 min] INSPECT_START: Item #2 started test at Station 1 (duration=3.02m).
+[t=   16.73 min] DEFECT_FOUND: Item #2 failed Station 1 (defect #1) -> routed to Repair.
+[t=   16.73 min] REPAIR_START: Item #2 started repair (duration=5.05m).
+[t=   18.57 min] INSPECT_PASS: Item #1 passed Station 2.
+[t=   18.57 min] INSPECT_START: Item #1 started test at Station 3 (duration=3.33m).
+[t=   21.78 min] REPAIR_END: Item #2 repair finished -> routed back to Station 1.
+[t=   21.78 min] INSPECT_START: Item #2 started test at Station 1 (duration=5.74m).
+[t=   21.90 min] INSPECT_PASS: Item #1 passed Station 3.
+[t=   21.90 min] COMPLETED: Item #1 successfully finished all tests -> GOOD PRODUCT.
+[t=   23.79 min] ARRIVAL: Item #3 entered system.
+[t=   23.79 min] INSPECT_QUEUE: Item #3 joined queue at Station 1 (queue_len=1).
+[t=   25.48 min] ARRIVAL: Item #4 entered system.
+[t=   25.48 min] INSPECT_QUEUE: Item #4 joined queue at Station 1 (queue_len=2).
+[t=   27.51 min] INSPECT_PASS: Item #2 passed Station 1.
+[t=   27.51 min] INSPECT_START: Item #2 started test at Station 2 (duration=6.50m).
+[t=   27.51 min] INSPECT_START: Item #3 started test at Station 1 (duration=5.95m).
+[t=   33.46 min] INSPECT_PASS: Item #3 passed Station 1.
+[t=   33.46 min] INSPECT_QUEUE: Item #3 joined queue at Station 2 (queue_len=1).
+[t=   33.46 min] INSPECT_START: Item #4 started test at Station 1 (duration=5.31m).
+[t=   34.02 min] INSPECT_PASS: Item #2 passed Station 2.
+[t=   34.02 min] INSPECT_START: Item #2 started test at Station 3 (duration=5.98m).
+[t=   34.02 min] INSPECT_START: Item #3 started test at Station 2 (duration=6.47m).
+[t=   38.77 min] INSPECT_PASS: Item #4 passed Station 1.
+[t=   38.77 min] INSPECT_QUEUE: Item #4 joined queue at Station 2 (queue_len=1).
+[t=   40.00 min] SCRAPPED: Item #2 failed Station 3 (defect #2) -> SCRAPPED.
+[t=   40.49 min] INSPECT_PASS: Item #3 passed Station 2.
+[t=   40.49 min] INSPECT_START: Item #3 started test at Station 3 (duration=4.11m).
+[t=   40.49 min] INSPECT_START: Item #4 started test at Station 2 (duration=4.49m).
+[t=   44.59 min] INSPECT_PASS: Item #3 passed Station 3.
+[t=   44.59 min] COMPLETED: Item #3 successfully finished all tests -> GOOD PRODUCT.
+[t=   44.98 min] INSPECT_PASS: Item #4 passed Station 2.
+[t=   44.98 min] INSPECT_START: Item #4 started test at Station 3 (duration=4.13m).
+[t=   49.11 min] INSPECT_PASS: Item #4 passed Station 3.
+[t=   49.11 min] COMPLETED: Item #4 successfully finished all tests -> GOOD PRODUCT.
+[t=   56.99 min] ARRIVAL: Item #5 entered system.
+[t=   56.99 min] INSPECT_START: Item #5 started test at Station 1 (duration=4.23m).
+[t=   60.10 min] ARRIVAL: Item #6 entered system.
+[t=   60.10 min] INSPECT_QUEUE: Item #6 joined queue at Station 1 (queue_len=1).
+[t=   61.22 min] INSPECT_PASS: Item #5 passed Station 1.
+[t=   61.22 min] INSPECT_START: Item #5 started test at Station 2 (duration=5.54m).
+[t=   61.22 min] INSPECT_START: Item #6 started test at Station 1 (duration=6.02m).
+[t=   66.76 min] INSPECT_PASS: Item #5 passed Station 2.
+[t=   66.76 min] INSPECT_START: Item #5 started test at Station 3 (duration=4.07m).
+[t=   67.24 min] INSPECT_PASS: Item #6 passed Station 1.
+[t=   67.24 min] INSPECT_START: Item #6 started test at Station 2 (duration=4.08m).
+[t=   70.83 min] INSPECT_PASS: Item #5 passed Station 3.
+[t=   70.83 min] COMPLETED: Item #5 successfully finished all tests -> GOOD PRODUCT.
+[t=   71.31 min] INSPECT_PASS: Item #6 passed Station 2.
+[t=   71.31 min] INSPECT_START: Item #6 started test at Station 3 (duration=4.40m).
+[t=   73.16 min] ARRIVAL: Item #7 entered system.
+[t=   73.16 min] INSPECT_START: Item #7 started test at Station 1 (duration=4.14m).
+[t=   75.72 min] INSPECT_PASS: Item #6 passed Station 3.
+[t=   75.72 min] COMPLETED: Item #6 successfully finished all tests -> GOOD PRODUCT.
+[t=   75.99 min] ARRIVAL: Item #8 entered system.
+[t=   75.99 min] INSPECT_QUEUE: Item #8 joined queue at Station 1 (queue_len=1).
+[t=   77.30 min] INSPECT_PASS: Item #7 passed Station 1.
+[t=   77.30 min] INSPECT_START: Item #7 started test at Station 2 (duration=5.02m).
+[t=   77.30 min] INSPECT_START: Item #8 started test at Station 1 (duration=5.05m).
+[t=   82.32 min] INSPECT_PASS: Item #7 passed Station 2.
+[t=   82.32 min] INSPECT_START: Item #7 started test at Station 3 (duration=3.29m).
+[t=   82.36 min] INSPECT_PASS: Item #8 passed Station 1.
+[t=   82.36 min] INSPECT_START: Item #8 started test at Station 2 (duration=6.73m).
+[t=   85.61 min] INSPECT_PASS: Item #7 passed Station 3.
+[t=   85.61 min] COMPLETED: Item #7 successfully finished all tests -> GOOD PRODUCT.
+[t=   89.08 min] DEFECT_FOUND: Item #8 failed Station 2 (defect #1) -> routed to Repair.
+[t=   89.08 min] REPAIR_START: Item #8 started repair (duration=10.38m).
+[t=   98.80 min] ARRIVAL: Item #9 entered system.
+[t=   98.80 min] INSPECT_START: Item #9 started test at Station 1 (duration=2.89m).
+[t=   99.46 min] REPAIR_END: Item #8 repair finished -> routed back to Station 1.
+[t=   99.46 min] INSPECT_QUEUE: Item #8 joined queue at Station 1 (queue_len=1).
+[t=  101.69 min] INSPECT_PASS: Item #9 passed Station 1.
+[t=  101.69 min] INSPECT_START: Item #9 started test at Station 2 (duration=4.80m).
+[t=  101.69 min] INSPECT_START: Item #8 started test at Station 1 (duration=3.19m).
+[t=  104.88 min] INSPECT_PASS: Item #8 passed Station 1.
+[t=  104.88 min] INSPECT_QUEUE: Item #8 joined queue at Station 2 (queue_len=1).
+[t=  106.49 min] INSPECT_PASS: Item #9 passed Station 2.
+[t=  106.49 min] INSPECT_START: Item #9 started test at Station 3 (duration=5.41m).
+[t=  106.49 min] INSPECT_START: Item #8 started test at Station 2 (duration=5.61m).
+[t=  106.50 min] ARRIVAL: Item #10 entered system.
+[t=  106.50 min] INSPECT_START: Item #10 started test at Station 1 (duration=4.98m).
+[t=  108.16 min] ARRIVAL: Item #11 entered system.
+[t=  108.16 min] INSPECT_QUEUE: Item #11 joined queue at Station 1 (queue_len=1).
+[t=  111.48 min] INSPECT_PASS: Item #10 passed Station 1.
+[t=  111.48 min] INSPECT_QUEUE: Item #10 joined queue at Station 2 (queue_len=1).
+[t=  111.48 min] INSPECT_START: Item #11 started test at Station 1 (duration=3.65m).
+[t=  111.89 min] INSPECT_PASS: Item #9 passed Station 3.
+[t=  111.89 min] COMPLETED: Item #9 successfully finished all tests -> GOOD PRODUCT.
+[t=  112.09 min] INSPECT_PASS: Item #8 passed Station 2.
+[t=  112.09 min] INSPECT_START: Item #8 started test at Station 3 (duration=3.12m).
+[t=  112.09 min] INSPECT_START: Item #10 started test at Station 2 (duration=5.52m).
+[t=  115.13 min] INSPECT_PASS: Item #11 passed Station 1.
+[t=  115.13 min] INSPECT_QUEUE: Item #11 joined queue at Station 2 (queue_len=1).
+[t=  115.21 min] INSPECT_PASS: Item #8 passed Station 3.
+[t=  115.21 min] COMPLETED: Item #8 successfully finished all tests -> GOOD PRODUCT.
+[t=  117.62 min] INSPECT_PASS: Item #10 passed Station 2.
+[t=  117.62 min] INSPECT_START: Item #10 started test at Station 3 (duration=5.61m).
+[t=  117.62 min] INSPECT_START: Item #11 started test at Station 2 (duration=3.93m).
+[t=  121.54 min] INSPECT_PASS: Item #11 passed Station 2.
+[t=  121.54 min] INSPECT_QUEUE: Item #11 joined queue at Station 3 (queue_len=1).
+[t=  123.23 min] INSPECT_PASS: Item #10 passed Station 3.
+[t=  123.23 min] COMPLETED: Item #10 successfully finished all tests -> GOOD PRODUCT.
+[t=  123.23 min] INSPECT_START: Item #11 started test at Station 3 (duration=4.96m).
+[t=  123.24 min] ARRIVAL: Item #12 entered system.
+[t=  123.24 min] INSPECT_START: Item #12 started test at Station 1 (duration=3.16m).
+[t=  126.40 min] INSPECT_PASS: Item #12 passed Station 1.
+[t=  126.40 min] INSPECT_START: Item #12 started test at Station 2 (duration=5.20m).
+[t=  128.18 min] INSPECT_PASS: Item #11 passed Station 3.
+[t=  128.18 min] COMPLETED: Item #11 successfully finished all tests -> GOOD PRODUCT.
+[t=  130.53 min] ARRIVAL: Item #13 entered system.
+[t=  130.53 min] INSPECT_START: Item #13 started test at Station 1 (duration=4.29m).
+[t=  131.27 min] ARRIVAL: Item #14 entered system.
+[t=  131.27 min] INSPECT_QUEUE: Item #14 joined queue at Station 1 (queue_len=1).
+[t=  131.60 min] INSPECT_PASS: Item #12 passed Station 2.
+[t=  131.60 min] INSPECT_START: Item #12 started test at Station 3 (duration=3.53m).
+[t=  134.82 min] INSPECT_PASS: Item #13 passed Station 1.
+[t=  134.82 min] INSPECT_START: Item #13 started test at Station 2 (duration=4.44m).
+[t=  134.82 min] INSPECT_START: Item #14 started test at Station 1 (duration=5.74m).
+[t=  135.13 min] INSPECT_PASS: Item #12 passed Station 3.
+[t=  135.13 min] COMPLETED: Item #12 successfully finished all tests -> GOOD PRODUCT.
+[t=  139.26 min] INSPECT_PASS: Item #13 passed Station 2.
+[t=  139.26 min] INSPECT_START: Item #13 started test at Station 3 (duration=5.15m).
+[t=  140.56 min] INSPECT_PASS: Item #14 passed Station 1.
+[t=  140.56 min] INSPECT_START: Item #14 started test at Station 2 (duration=4.79m).
+[t=  144.41 min] INSPECT_PASS: Item #13 passed Station 3.
+[t=  144.41 min] COMPLETED: Item #13 successfully finished all tests -> GOOD PRODUCT.
+[t=  145.36 min] INSPECT_PASS: Item #14 passed Station 2.
+[t=  145.36 min] INSPECT_START: Item #14 started test at Station 3 (duration=3.35m).
+[t=  148.71 min] INSPECT_PASS: Item #14 passed Station 3.
+[t=  148.71 min] COMPLETED: Item #14 successfully finished all tests -> GOOD PRODUCT.
+[t=  154.85 min] ARRIVAL: Item #15 entered system.
+[t=  154.85 min] INSPECT_START: Item #15 started test at Station 1 (duration=3.47m).
+[t=  158.32 min] INSPECT_PASS: Item #15 passed Station 1.
+[t=  158.32 min] INSPECT_START: Item #15 started test at Station 2 (duration=4.81m).
+[t=  163.13 min] INSPECT_PASS: Item #15 passed Station 2.
+[t=  163.13 min] INSPECT_START: Item #15 started test at Station 3 (duration=5.80m).
+[t=  168.94 min] INSPECT_PASS: Item #15 passed Station 3.
+[t=  168.94 min] COMPLETED: Item #15 successfully finished all tests -> GOOD PRODUCT.
+[t=  174.63 min] ARRIVAL: Item #16 entered system.
+[t=  174.63 min] INSPECT_START: Item #16 started test at Station 1 (duration=2.89m).
+[t=  177.52 min] INSPECT_PASS: Item #16 passed Station 1.
+[t=  177.52 min] INSPECT_START: Item #16 started test at Station 2 (duration=4.82m).
+[t=  182.34 min] INSPECT_PASS: Item #16 passed Station 2.
+[t=  182.34 min] INSPECT_START: Item #16 started test at Station 3 (duration=5.39m).
+[t=  182.62 min] ARRIVAL: Item #17 entered system.
+[t=  182.62 min] INSPECT_START: Item #17 started test at Station 1 (duration=4.34m).
+[t=  186.96 min] INSPECT_PASS: Item #17 passed Station 1.
+[t=  186.96 min] INSPECT_START: Item #17 started test at Station 2 (duration=5.30m).
+[t=  187.73 min] INSPECT_PASS: Item #16 passed Station 3.
+[t=  187.73 min] COMPLETED: Item #16 successfully finished all tests -> GOOD PRODUCT.
+[t=  188.12 min] ARRIVAL: Item #18 entered system.
+[t=  188.12 min] INSPECT_START: Item #18 started test at Station 1 (duration=4.29m).
+[t=  188.71 min] ARRIVAL: Item #19 entered system.
+[t=  188.71 min] INSPECT_QUEUE: Item #19 joined queue at Station 1 (queue_len=1).
+[t=  192.26 min] INSPECT_PASS: Item #17 passed Station 2.
+[t=  192.26 min] INSPECT_START: Item #17 started test at Station 3 (duration=3.17m).
+[t=  192.41 min] INSPECT_PASS: Item #18 passed Station 1.
+[t=  192.41 min] INSPECT_START: Item #18 started test at Station 2 (duration=4.48m).
+[t=  192.41 min] INSPECT_START: Item #19 started test at Station 1 (duration=4.89m).
+[t=  195.43 min] INSPECT_PASS: Item #17 passed Station 3.
+[t=  195.43 min] COMPLETED: Item #17 successfully finished all tests -> GOOD PRODUCT.
+[t=  196.90 min] INSPECT_PASS: Item #18 passed Station 2.
+[t=  196.90 min] INSPECT_START: Item #18 started test at Station 3 (duration=4.17m).
+[t=  197.30 min] INSPECT_PASS: Item #19 passed Station 1.
+[t=  197.30 min] INSPECT_START: Item #19 started test at Station 2 (duration=5.94m).
+[t=  201.06 min] INSPECT_PASS: Item #18 passed Station 3.
+[t=  201.06 min] COMPLETED: Item #18 successfully finished all tests -> GOOD PRODUCT.
+[t=  203.24 min] INSPECT_PASS: Item #19 passed Station 2.
+[t=  203.24 min] INSPECT_START: Item #19 started test at Station 3 (duration=3.96m).
+[t=  207.19 min] INSPECT_PASS: Item #19 passed Station 3.
+[t=  207.19 min] COMPLETED: Item #19 successfully finished all tests -> GOOD PRODUCT.
+[t=  207.87 min] ARRIVAL: Item #20 entered system.
+[t=  207.87 min] INSPECT_START: Item #20 started test at Station 1 (duration=4.47m).
+[t=  211.67 min] ARRIVAL: Item #21 entered system.
+[t=  211.67 min] INSPECT_QUEUE: Item #21 joined queue at Station 1 (queue_len=1).
+[t=  212.33 min] INSPECT_PASS: Item #20 passed Station 1.
+[t=  212.33 min] INSPECT_START: Item #20 started test at Station 2 (duration=4.33m).
+[t=  212.33 min] INSPECT_START: Item #21 started test at Station 1 (duration=5.03m).
+[t=  216.66 min] INSPECT_PASS: Item #20 passed Station 2.
+[t=  216.66 min] INSPECT_START: Item #20 started test at Station 3 (duration=6.43m).
+[t=  217.36 min] INSPECT_PASS: Item #21 passed Station 1.
+[t=  217.36 min] INSPECT_START: Item #21 started test at Station 2 (duration=3.98m).
+[t=  217.80 min] ARRIVAL: Item #22 entered system.
+[t=  217.80 min] INSPECT_START: Item #22 started test at Station 1 (duration=2.49m).
+[t=  220.29 min] INSPECT_PASS: Item #22 passed Station 1.
+[t=  220.29 min] INSPECT_QUEUE: Item #22 joined queue at Station 2 (queue_len=1).
+[t=  221.34 min] INSPECT_PASS: Item #21 passed Station 2.
+[t=  221.34 min] INSPECT_QUEUE: Item #21 joined queue at Station 3 (queue_len=1).
+[t=  221.34 min] INSPECT_START: Item #22 started test at Station 2 (duration=5.47m).
+[t=  223.09 min] INSPECT_PASS: Item #20 passed Station 3.
+[t=  223.09 min] COMPLETED: Item #20 successfully finished all tests -> GOOD PRODUCT.
+[t=  223.09 min] INSPECT_START: Item #21 started test at Station 3 (duration=3.71m).
+[t=  226.80 min] INSPECT_PASS: Item #21 passed Station 3.
+[t=  226.80 min] COMPLETED: Item #21 successfully finished all tests -> GOOD PRODUCT.
+[t=  226.81 min] INSPECT_PASS: Item #22 passed Station 2.
+[t=  226.81 min] INSPECT_START: Item #22 started test at Station 3 (duration=3.29m).
+[t=  230.10 min] INSPECT_PASS: Item #22 passed Station 3.
+[t=  230.10 min] COMPLETED: Item #22 successfully finished all tests -> GOOD PRODUCT.
+[t=  245.75 min] ARRIVAL: Item #23 entered system.
+[t=  245.75 min] INSPECT_START: Item #23 started test at Station 1 (duration=5.28m).
+[t=  245.79 min] ARRIVAL: Item #24 entered system.
+[t=  245.79 min] INSPECT_QUEUE: Item #24 joined queue at Station 1 (queue_len=1).
+[t=  248.83 min] ARRIVAL: Item #25 entered system.
+[t=  248.83 min] INSPECT_QUEUE: Item #25 joined queue at Station 1 (queue_len=2).
+[t=  251.04 min] INSPECT_PASS: Item #23 passed Station 1.
+[t=  251.04 min] INSPECT_START: Item #23 started test at Station 2 (duration=4.87m).
+[t=  251.04 min] INSPECT_START: Item #24 started test at Station 1 (duration=5.52m).
+[t=  255.91 min] INSPECT_PASS: Item #23 passed Station 2.
+[t=  255.91 min] INSPECT_START: Item #23 started test at Station 3 (duration=4.67m).
+[t=  256.56 min] INSPECT_PASS: Item #24 passed Station 1.
+[t=  256.56 min] INSPECT_START: Item #24 started test at Station 2 (duration=5.87m).
+[t=  256.56 min] INSPECT_START: Item #25 started test at Station 1 (duration=3.52m).
+[t=  260.08 min] INSPECT_PASS: Item #25 passed Station 1.
+[t=  260.08 min] INSPECT_QUEUE: Item #25 joined queue at Station 2 (queue_len=1).
+[t=  260.58 min] INSPECT_PASS: Item #23 passed Station 3.
+[t=  260.58 min] COMPLETED: Item #23 successfully finished all tests -> GOOD PRODUCT.
+[t=  262.35 min] ARRIVAL: Item #26 entered system.
+[t=  262.35 min] INSPECT_START: Item #26 started test at Station 1 (duration=4.24m).
+[t=  262.43 min] INSPECT_PASS: Item #24 passed Station 2.
+[t=  262.43 min] INSPECT_START: Item #24 started test at Station 3 (duration=5.23m).
+[t=  262.43 min] INSPECT_START: Item #25 started test at Station 2 (duration=5.55m).
+[t=  266.59 min] INSPECT_PASS: Item #26 passed Station 1.
+[t=  266.59 min] INSPECT_QUEUE: Item #26 joined queue at Station 2 (queue_len=1).
+[t=  267.56 min] ARRIVAL: Item #27 entered system.
+[t=  267.56 min] INSPECT_START: Item #27 started test at Station 1 (duration=1.40m).
+[t=  267.65 min] INSPECT_PASS: Item #24 passed Station 3.
+[t=  267.65 min] COMPLETED: Item #24 successfully finished all tests -> GOOD PRODUCT.
+[t=  267.98 min] INSPECT_PASS: Item #25 passed Station 2.
+[t=  267.98 min] INSPECT_START: Item #25 started test at Station 3 (duration=5.16m).
+[t=  267.98 min] INSPECT_START: Item #26 started test at Station 2 (duration=2.83m).
+[t=  268.96 min] INSPECT_PASS: Item #27 passed Station 1.
+[t=  268.96 min] INSPECT_QUEUE: Item #27 joined queue at Station 2 (queue_len=1).
+[t=  270.81 min] INSPECT_PASS: Item #26 passed Station 2.
+[t=  270.81 min] INSPECT_QUEUE: Item #26 joined queue at Station 3 (queue_len=1).
+[t=  270.81 min] INSPECT_START: Item #27 started test at Station 2 (duration=5.40m).
+[t=  273.14 min] INSPECT_PASS: Item #25 passed Station 3.
+[t=  273.14 min] COMPLETED: Item #25 successfully finished all tests -> GOOD PRODUCT.
+[t=  273.14 min] INSPECT_START: Item #26 started test at Station 3 (duration=5.52m).
+[t=  276.21 min] INSPECT_PASS: Item #27 passed Station 2.
+[t=  276.21 min] INSPECT_QUEUE: Item #27 joined queue at Station 3 (queue_len=1).
+[t=  278.66 min] INSPECT_PASS: Item #26 passed Station 3.
+[t=  278.66 min] COMPLETED: Item #26 successfully finished all tests -> GOOD PRODUCT.
+[t=  278.66 min] INSPECT_START: Item #27 started test at Station 3 (duration=4.05m).
+[t=  282.71 min] INSPECT_PASS: Item #27 passed Station 3.
+[t=  282.71 min] COMPLETED: Item #27 successfully finished all tests -> GOOD PRODUCT.
+[t=  287.12 min] ARRIVAL: Item #28 entered system.
+[t=  287.12 min] INSPECT_START: Item #28 started test at Station 1 (duration=3.19m).
+[t=  290.31 min] INSPECT_PASS: Item #28 passed Station 1.
+[t=  290.31 min] INSPECT_START: Item #28 started test at Station 2 (duration=4.53m).
+[t=  294.84 min] INSPECT_PASS: Item #28 passed Station 2.
+[t=  294.84 min] INSPECT_START: Item #28 started test at Station 3 (duration=6.08m).
+[t=  300.16 min] ARRIVAL: Item #29 entered system.
+[t=  300.16 min] INSPECT_START: Item #29 started test at Station 1 (duration=5.26m).
+[t=  300.93 min] INSPECT_PASS: Item #28 passed Station 3.
+[t=  300.93 min] COMPLETED: Item #28 successfully finished all tests -> GOOD PRODUCT.
+[t=  305.42 min] DEFECT_FOUND: Item #29 failed Station 1 (defect #1) -> routed to Repair.
+[t=  305.42 min] REPAIR_START: Item #29 started repair (duration=8.84m).
+[t=  312.87 min] ARRIVAL: Item #30 entered system.
+[t=  312.87 min] INSPECT_START: Item #30 started test at Station 1 (duration=6.13m).
+[t=  314.26 min] REPAIR_END: Item #29 repair finished -> routed back to Station 1.
+[t=  314.26 min] INSPECT_QUEUE: Item #29 joined queue at Station 1 (queue_len=1).
+[t=  316.64 min] ARRIVAL: Item #31 entered system.
+[t=  316.64 min] INSPECT_QUEUE: Item #31 joined queue at Station 1 (queue_len=2).
+[t=  319.00 min] INSPECT_PASS: Item #30 passed Station 1.
+[t=  319.00 min] INSPECT_START: Item #30 started test at Station 2 (duration=4.74m).
+[t=  319.00 min] INSPECT_START: Item #29 started test at Station 1 (duration=3.60m).
+[t=  320.21 min] ARRIVAL: Item #32 entered system.
+[t=  320.21 min] INSPECT_QUEUE: Item #32 joined queue at Station 1 (queue_len=2).
+[t=  322.60 min] INSPECT_PASS: Item #29 passed Station 1.
+[t=  322.60 min] INSPECT_QUEUE: Item #29 joined queue at Station 2 (queue_len=1).
+[t=  322.60 min] INSPECT_START: Item #31 started test at Station 1 (duration=4.28m).
+[t=  323.74 min] INSPECT_PASS: Item #30 passed Station 2.
+[t=  323.74 min] INSPECT_START: Item #30 started test at Station 3 (duration=4.21m).
+[t=  323.74 min] INSPECT_START: Item #29 started test at Station 2 (duration=5.50m).
+[t=  325.66 min] ARRIVAL: Item #33 entered system.
+[t=  325.66 min] INSPECT_QUEUE: Item #33 joined queue at Station 1 (queue_len=2).
+[t=  326.88 min] INSPECT_PASS: Item #31 passed Station 1.
+[t=  326.88 min] INSPECT_QUEUE: Item #31 joined queue at Station 2 (queue_len=1).
+[t=  326.88 min] INSPECT_START: Item #32 started test at Station 1 (duration=3.53m).
+[t=  327.95 min] INSPECT_PASS: Item #30 passed Station 3.
+[t=  327.95 min] COMPLETED: Item #30 successfully finished all tests -> GOOD PRODUCT.
+[t=  329.23 min] INSPECT_PASS: Item #29 passed Station 2.
+[t=  329.23 min] INSPECT_START: Item #29 started test at Station 3 (duration=3.03m).
+[t=  329.23 min] INSPECT_START: Item #31 started test at Station 2 (duration=5.34m).
+[t=  330.42 min] INSPECT_PASS: Item #32 passed Station 1.
+[t=  330.42 min] INSPECT_QUEUE: Item #32 joined queue at Station 2 (queue_len=1).
+[t=  330.42 min] INSPECT_START: Item #33 started test at Station 1 (duration=5.32m).
+[t=  331.50 min] ARRIVAL: Item #34 entered system.
+[t=  331.50 min] INSPECT_QUEUE: Item #34 joined queue at Station 1 (queue_len=1).
+[t=  332.26 min] INSPECT_PASS: Item #29 passed Station 3.
+[t=  332.26 min] COMPLETED: Item #29 successfully finished all tests -> GOOD PRODUCT.
+[t=  334.05 min] ARRIVAL: Item #35 entered system.
+[t=  334.05 min] INSPECT_QUEUE: Item #35 joined queue at Station 1 (queue_len=2).
+[t=  334.29 min] ARRIVAL: Item #36 entered system.
+[t=  334.29 min] INSPECT_QUEUE: Item #36 joined queue at Station 1 (queue_len=3).
+[t=  334.58 min] INSPECT_PASS: Item #31 passed Station 2.
+[t=  334.58 min] INSPECT_START: Item #31 started test at Station 3 (duration=4.10m).
+[t=  334.58 min] INSPECT_START: Item #32 started test at Station 2 (duration=3.27m).
+[t=  335.73 min] INSPECT_PASS: Item #33 passed Station 1.
+[t=  335.73 min] INSPECT_QUEUE: Item #33 joined queue at Station 2 (queue_len=1).
+[t=  335.73 min] INSPECT_START: Item #34 started test at Station 1 (duration=2.72m).
+[t=  337.10 min] ARRIVAL: Item #37 entered system.
+[t=  337.10 min] INSPECT_QUEUE: Item #37 joined queue at Station 1 (queue_len=3).
+[t=  337.16 min] ARRIVAL: Item #38 entered system.
+[t=  337.16 min] INSPECT_QUEUE: Item #38 joined queue at Station 1 (queue_len=4).
+[t=  337.85 min] INSPECT_PASS: Item #32 passed Station 2.
+[t=  337.85 min] INSPECT_QUEUE: Item #32 joined queue at Station 3 (queue_len=1).
+[t=  337.85 min] INSPECT_START: Item #33 started test at Station 2 (duration=3.83m).
+[t=  338.46 min] INSPECT_PASS: Item #34 passed Station 1.
+[t=  338.46 min] INSPECT_QUEUE: Item #34 joined queue at Station 2 (queue_len=1).
+[t=  338.46 min] INSPECT_START: Item #35 started test at Station 1 (duration=5.63m).
+[t=  338.68 min] INSPECT_PASS: Item #31 passed Station 3.
+[t=  338.68 min] COMPLETED: Item #31 successfully finished all tests -> GOOD PRODUCT.
+[t=  338.68 min] INSPECT_START: Item #32 started test at Station 3 (duration=4.12m).
+[t=  341.68 min] INSPECT_PASS: Item #33 passed Station 2.
+[t=  341.68 min] INSPECT_QUEUE: Item #33 joined queue at Station 3 (queue_len=1).
+[t=  341.68 min] INSPECT_START: Item #34 started test at Station 2 (duration=5.69m).
+[t=  342.80 min] INSPECT_PASS: Item #32 passed Station 3.
+[t=  342.80 min] COMPLETED: Item #32 successfully finished all tests -> GOOD PRODUCT.
+[t=  342.80 min] INSPECT_START: Item #33 started test at Station 3 (duration=5.75m).
+[t=  344.09 min] INSPECT_PASS: Item #35 passed Station 1.
+[t=  344.09 min] INSPECT_QUEUE: Item #35 joined queue at Station 2 (queue_len=1).
+[t=  344.09 min] INSPECT_START: Item #36 started test at Station 1 (duration=4.80m).
+[t=  347.37 min] INSPECT_PASS: Item #34 passed Station 2.
+[t=  347.37 min] INSPECT_QUEUE: Item #34 joined queue at Station 3 (queue_len=1).
+[t=  347.37 min] INSPECT_START: Item #35 started test at Station 2 (duration=3.80m).
+[t=  348.56 min] INSPECT_PASS: Item #33 passed Station 3.
+[t=  348.56 min] COMPLETED: Item #33 successfully finished all tests -> GOOD PRODUCT.
+[t=  348.56 min] INSPECT_START: Item #34 started test at Station 3 (duration=4.60m).
+[t=  348.88 min] INSPECT_PASS: Item #36 passed Station 1.
+[t=  348.88 min] INSPECT_QUEUE: Item #36 joined queue at Station 2 (queue_len=1).
+[t=  348.88 min] INSPECT_START: Item #37 started test at Station 1 (duration=2.99m).
+[t=  351.06 min] ARRIVAL: Item #39 entered system.
+[t=  351.06 min] INSPECT_QUEUE: Item #39 joined queue at Station 1 (queue_len=2).
+[t=  351.17 min] INSPECT_PASS: Item #35 passed Station 2.
+[t=  351.17 min] INSPECT_QUEUE: Item #35 joined queue at Station 3 (queue_len=1).
+[t=  351.17 min] INSPECT_START: Item #36 started test at Station 2 (duration=5.08m).
+[t=  351.87 min] INSPECT_PASS: Item #37 passed Station 1.
+[t=  351.87 min] INSPECT_QUEUE: Item #37 joined queue at Station 2 (queue_len=1).
+[t=  351.87 min] INSPECT_START: Item #38 started test at Station 1 (duration=5.13m).
+[t=  353.16 min] INSPECT_PASS: Item #34 passed Station 3.
+[t=  353.16 min] COMPLETED: Item #34 successfully finished all tests -> GOOD PRODUCT.
+[t=  353.16 min] INSPECT_START: Item #35 started test at Station 3 (duration=4.15m).
+[t=  354.23 min] ARRIVAL: Item #40 entered system.
+[t=  354.23 min] INSPECT_QUEUE: Item #40 joined queue at Station 1 (queue_len=2).
+[t=  356.25 min] INSPECT_PASS: Item #36 passed Station 2.
+[t=  356.25 min] INSPECT_QUEUE: Item #36 joined queue at Station 3 (queue_len=1).
+[t=  356.25 min] INSPECT_START: Item #37 started test at Station 2 (duration=3.56m).
+[t=  357.00 min] INSPECT_PASS: Item #38 passed Station 1.
+[t=  357.00 min] INSPECT_QUEUE: Item #38 joined queue at Station 2 (queue_len=1).
+[t=  357.00 min] INSPECT_START: Item #39 started test at Station 1 (duration=6.34m).
+[t=  357.31 min] INSPECT_PASS: Item #35 passed Station 3.
+[t=  357.31 min] COMPLETED: Item #35 successfully finished all tests -> GOOD PRODUCT.
+[t=  357.31 min] INSPECT_START: Item #36 started test at Station 3 (duration=3.47m).
+[t=  359.60 min] ARRIVAL: Item #41 entered system.
+[t=  359.60 min] INSPECT_QUEUE: Item #41 joined queue at Station 1 (queue_len=2).
+[t=  359.81 min] INSPECT_PASS: Item #37 passed Station 2.
+[t=  359.81 min] INSPECT_QUEUE: Item #37 joined queue at Station 3 (queue_len=1).
+[t=  359.81 min] INSPECT_START: Item #38 started test at Station 2 (duration=4.45m).
+[t=  360.78 min] INSPECT_PASS: Item #36 passed Station 3.
+[t=  360.78 min] COMPLETED: Item #36 successfully finished all tests -> GOOD PRODUCT.
+[t=  360.78 min] INSPECT_START: Item #37 started test at Station 3 (duration=4.73m).
+[t=  363.34 min] INSPECT_PASS: Item #39 passed Station 1.
+[t=  363.34 min] INSPECT_QUEUE: Item #39 joined queue at Station 2 (queue_len=1).
+[t=  363.34 min] INSPECT_START: Item #40 started test at Station 1 (duration=3.89m).
+[t=  364.26 min] INSPECT_PASS: Item #38 passed Station 2.
+[t=  364.26 min] INSPECT_QUEUE: Item #38 joined queue at Station 3 (queue_len=1).
+[t=  364.26 min] INSPECT_START: Item #39 started test at Station 2 (duration=5.52m).
+[t=  365.51 min] INSPECT_PASS: Item #37 passed Station 3.
+[t=  365.51 min] COMPLETED: Item #37 successfully finished all tests -> GOOD PRODUCT.
+[t=  365.51 min] INSPECT_START: Item #38 started test at Station 3 (duration=4.44m).
+[t=  367.23 min] INSPECT_PASS: Item #40 passed Station 1.
+[t=  367.23 min] INSPECT_QUEUE: Item #40 joined queue at Station 2 (queue_len=1).
+[t=  367.23 min] INSPECT_START: Item #41 started test at Station 1 (duration=2.66m).
+[t=  369.77 min] INSPECT_PASS: Item #39 passed Station 2.
+[t=  369.77 min] INSPECT_QUEUE: Item #39 joined queue at Station 3 (queue_len=1).
+[t=  369.77 min] INSPECT_START: Item #40 started test at Station 2 (duration=3.84m).
+[t=  369.89 min] DEFECT_FOUND: Item #41 failed Station 1 (defect #1) -> routed to Repair.
+[t=  369.89 min] REPAIR_START: Item #41 started repair (duration=7.47m).
+[t=  369.94 min] INSPECT_PASS: Item #38 passed Station 3.
+[t=  369.94 min] COMPLETED: Item #38 successfully finished all tests -> GOOD PRODUCT.
+[t=  369.94 min] INSPECT_START: Item #39 started test at Station 3 (duration=5.22m).
+[t=  373.61 min] INSPECT_PASS: Item #40 passed Station 2.
+[t=  373.61 min] INSPECT_QUEUE: Item #40 joined queue at Station 3 (queue_len=1).
+[t=  375.16 min] INSPECT_PASS: Item #39 passed Station 3.
+[t=  375.16 min] COMPLETED: Item #39 successfully finished all tests -> GOOD PRODUCT.
+[t=  375.16 min] INSPECT_START: Item #40 started test at Station 3 (duration=4.04m).
+[t=  377.36 min] REPAIR_END: Item #41 repair finished -> routed back to Station 1.
+[t=  377.36 min] INSPECT_START: Item #41 started test at Station 1 (duration=5.18m).
+[t=  378.81 min] ARRIVAL: Item #42 entered system.
+[t=  378.81 min] INSPECT_QUEUE: Item #42 joined queue at Station 1 (queue_len=1).
+[t=  379.20 min] INSPECT_PASS: Item #40 passed Station 3.
+[t=  379.20 min] COMPLETED: Item #40 successfully finished all tests -> GOOD PRODUCT.
+[t=  382.54 min] INSPECT_PASS: Item #41 passed Station 1.
+[t=  382.54 min] INSPECT_START: Item #41 started test at Station 2 (duration=4.32m).
+[t=  382.54 min] INSPECT_START: Item #42 started test at Station 1 (duration=4.67m).
+[t=  386.86 min] INSPECT_PASS: Item #41 passed Station 2.
+[t=  386.86 min] INSPECT_START: Item #41 started test at Station 3 (duration=5.97m).
+[t=  387.21 min] INSPECT_PASS: Item #42 passed Station 1.
+[t=  387.21 min] INSPECT_START: Item #42 started test at Station 2 (duration=5.73m).
+[t=  389.36 min] ARRIVAL: Item #43 entered system.
+[t=  389.36 min] INSPECT_START: Item #43 started test at Station 1 (duration=3.00m).
+[t=  390.57 min] ARRIVAL: Item #44 entered system.
+[t=  390.57 min] INSPECT_QUEUE: Item #44 joined queue at Station 1 (queue_len=1).
+[t=  392.36 min] INSPECT_PASS: Item #43 passed Station 1.
+[t=  392.36 min] INSPECT_QUEUE: Item #43 joined queue at Station 2 (queue_len=1).
+[t=  392.36 min] INSPECT_START: Item #44 started test at Station 1 (duration=4.40m).
+[t=  392.83 min] INSPECT_PASS: Item #41 passed Station 3.
+[t=  392.83 min] COMPLETED: Item #41 successfully finished all tests -> GOOD PRODUCT.
+[t=  392.94 min] INSPECT_PASS: Item #42 passed Station 2.
+[t=  392.94 min] INSPECT_START: Item #42 started test at Station 3 (duration=6.00m).
+[t=  392.94 min] INSPECT_START: Item #43 started test at Station 2 (duration=5.74m).
+[t=  396.76 min] INSPECT_PASS: Item #44 passed Station 1.
+[t=  396.76 min] INSPECT_QUEUE: Item #44 joined queue at Station 2 (queue_len=1).
+[t=  398.68 min] INSPECT_PASS: Item #43 passed Station 2.
+[t=  398.68 min] INSPECT_QUEUE: Item #43 joined queue at Station 3 (queue_len=1).
+[t=  398.68 min] INSPECT_START: Item #44 started test at Station 2 (duration=5.02m).
+[t=  398.94 min] INSPECT_PASS: Item #42 passed Station 3.
+[t=  398.94 min] COMPLETED: Item #42 successfully finished all tests -> GOOD PRODUCT.
+[t=  398.94 min] INSPECT_START: Item #43 started test at Station 3 (duration=5.12m).
+[t=  403.70 min] INSPECT_PASS: Item #44 passed Station 2.
+[t=  403.70 min] INSPECT_QUEUE: Item #44 joined queue at Station 3 (queue_len=1).
+[t=  404.06 min] INSPECT_PASS: Item #43 passed Station 3.
+[t=  404.06 min] COMPLETED: Item #43 successfully finished all tests -> GOOD PRODUCT.
+[t=  404.06 min] INSPECT_START: Item #44 started test at Station 3 (duration=6.43m).
+[t=  410.49 min] INSPECT_PASS: Item #44 passed Station 3.
+[t=  410.49 min] COMPLETED: Item #44 successfully finished all tests -> GOOD PRODUCT.
+[t=  422.31 min] ARRIVAL: Item #45 entered system.
+[t=  422.31 min] INSPECT_START: Item #45 started test at Station 1 (duration=5.09m).
+[t=  427.41 min] INSPECT_PASS: Item #45 passed Station 1.
+[t=  427.41 min] INSPECT_START: Item #45 started test at Station 2 (duration=5.13m).
+[t=  432.54 min] INSPECT_PASS: Item #45 passed Station 2.
+[t=  432.54 min] INSPECT_START: Item #45 started test at Station 3 (duration=5.04m).
+[t=  435.55 min] ARRIVAL: Item #46 entered system.
+[t=  435.55 min] INSPECT_START: Item #46 started test at Station 1 (duration=4.87m).
+[t=  437.58 min] INSPECT_PASS: Item #45 passed Station 3.
+[t=  437.58 min] COMPLETED: Item #45 successfully finished all tests -> GOOD PRODUCT.
+[t=  440.42 min] INSPECT_PASS: Item #46 passed Station 1.
+[t=  440.42 min] INSPECT_START: Item #46 started test at Station 2 (duration=4.79m).
+[t=  445.20 min] INSPECT_PASS: Item #46 passed Station 2.
+[t=  445.20 min] INSPECT_START: Item #46 started test at Station 3 (duration=3.81m).
+[t=  449.01 min] INSPECT_PASS: Item #46 passed Station 3.
+[t=  449.01 min] COMPLETED: Item #46 successfully finished all tests -> GOOD PRODUCT.
+[t=  454.64 min] ARRIVAL: Item #47 entered system.
+[t=  454.64 min] INSPECT_START: Item #47 started test at Station 1 (duration=6.18m).
+[t=  458.80 min] ARRIVAL: Item #48 entered system.
+[t=  458.80 min] INSPECT_QUEUE: Item #48 joined queue at Station 1 (queue_len=1).
+[t=  460.82 min] DEFECT_FOUND: Item #47 failed Station 1 (defect #1) -> routed to Repair.
+[t=  460.82 min] REPAIR_START: Item #47 started repair (duration=9.48m).
+[t=  460.82 min] INSPECT_START: Item #48 started test at Station 1 (duration=5.43m).
+[t=  462.03 min] ARRIVAL: Item #49 entered system.
+[t=  462.03 min] INSPECT_QUEUE: Item #49 joined queue at Station 1 (queue_len=1).
+[t=  466.25 min] INSPECT_PASS: Item #48 passed Station 1.
+[t=  466.25 min] INSPECT_START: Item #48 started test at Station 2 (duration=5.55m).
+[t=  466.25 min] INSPECT_START: Item #49 started test at Station 1 (duration=2.45m).
+[t=  468.70 min] INSPECT_PASS: Item #49 passed Station 1.
+[t=  468.70 min] INSPECT_QUEUE: Item #49 joined queue at Station 2 (queue_len=1).
+[t=  470.30 min] REPAIR_END: Item #47 repair finished -> routed back to Station 1.
+[t=  470.30 min] INSPECT_START: Item #47 started test at Station 1 (duration=4.27m).
+[t=  471.80 min] INSPECT_PASS: Item #48 passed Station 2.
+[t=  471.80 min] INSPECT_START: Item #48 started test at Station 3 (duration=4.00m).
+[t=  471.80 min] INSPECT_START: Item #49 started test at Station 2 (duration=4.02m).
+[t=  472.41 min] ARRIVAL: Item #50 entered system.
+[t=  472.41 min] INSPECT_QUEUE: Item #50 joined queue at Station 1 (queue_len=1).
+[t=  474.56 min] INSPECT_PASS: Item #47 passed Station 1.
+[t=  474.56 min] INSPECT_QUEUE: Item #47 joined queue at Station 2 (queue_len=1).
+[t=  474.56 min] INSPECT_START: Item #50 started test at Station 1 (duration=3.19m).
+[t=  475.57 min] ARRIVAL: Item #51 entered system.
+[t=  475.57 min] INSPECT_QUEUE: Item #51 joined queue at Station 1 (queue_len=1).
+[t=  475.80 min] INSPECT_PASS: Item #48 passed Station 3.
+[t=  475.80 min] COMPLETED: Item #48 successfully finished all tests -> GOOD PRODUCT.
+[t=  475.83 min] INSPECT_PASS: Item #49 passed Station 2.
+[t=  475.83 min] INSPECT_START: Item #49 started test at Station 3 (duration=3.81m).
+[t=  475.83 min] INSPECT_START: Item #47 started test at Station 2 (duration=4.90m).
+[t=  476.84 min] ARRIVAL: Item #52 entered system.
+[t=  476.84 min] INSPECT_QUEUE: Item #52 joined queue at Station 1 (queue_len=2).
+[t=  477.75 min] INSPECT_PASS: Item #50 passed Station 1.
+[t=  477.75 min] INSPECT_QUEUE: Item #50 joined queue at Station 2 (queue_len=1).
+[t=  477.75 min] INSPECT_START: Item #51 started test at Station 1 (duration=3.59m).
+[t=  479.64 min] INSPECT_PASS: Item #49 passed Station 3.
+[t=  479.64 min] COMPLETED: Item #49 successfully finished all tests -> GOOD PRODUCT.
+[t=  480.00 min] Simulation cutoff reached. Processing in-flight items (clearance mode).
+[t=  480.73 min] INSPECT_PASS: Item #47 passed Station 2.
+[t=  480.73 min] INSPECT_START: Item #47 started test at Station 3 (duration=4.58m).
+[t=  480.73 min] INSPECT_START: Item #50 started test at Station 2 (duration=5.39m).
+[t=  481.34 min] INSPECT_PASS: Item #51 passed Station 1.
+[t=  481.34 min] INSPECT_QUEUE: Item #51 joined queue at Station 2 (queue_len=1).
+[t=  481.34 min] INSPECT_START: Item #52 started test at Station 1 (duration=3.88m).
+[t=  485.22 min] INSPECT_PASS: Item #52 passed Station 1.
+[t=  485.22 min] INSPECT_QUEUE: Item #52 joined queue at Station 2 (queue_len=2).
+[t=  485.31 min] INSPECT_PASS: Item #47 passed Station 3.
+[t=  485.31 min] COMPLETED: Item #47 successfully finished all tests -> GOOD PRODUCT.
+[t=  486.12 min] INSPECT_PASS: Item #50 passed Station 2.
+[t=  486.12 min] INSPECT_START: Item #50 started test at Station 3 (duration=5.95m).
+[t=  486.12 min] INSPECT_START: Item #51 started test at Station 2 (duration=5.92m).
+[t=  492.04 min] INSPECT_PASS: Item #51 passed Station 2.
+[t=  492.04 min] INSPECT_QUEUE: Item #51 joined queue at Station 3 (queue_len=1).
+[t=  492.04 min] INSPECT_START: Item #52 started test at Station 2 (duration=5.23m).
+[t=  492.07 min] INSPECT_PASS: Item #50 passed Station 3.
+[t=  492.07 min] COMPLETED: Item #50 successfully finished all tests -> GOOD PRODUCT.
+[t=  492.07 min] INSPECT_START: Item #51 started test at Station 3 (duration=4.65m).
+[t=  496.72 min] INSPECT_PASS: Item #51 passed Station 3.
+[t=  496.72 min] COMPLETED: Item #51 successfully finished all tests -> GOOD PRODUCT.
+[t=  497.27 min] INSPECT_PASS: Item #52 passed Station 2.
+[t=  497.27 min] INSPECT_START: Item #52 started test at Station 3 (duration=5.65m).
+[t=  502.93 min] INSPECT_PASS: Item #52 passed Station 3.
+[t=  502.93 min] COMPLETED: Item #52 successfully finished all tests -> GOOD PRODUCT.
+[t=  502.93 min] SIMULATION FINISHED at t=502.93 min.
