@@ -1,0 +1,18 @@
+{
+  "name": "near-calendar",
+  "version": "1.0.0",
+  "description": "Server-rendered calendar for planning meetings",
+  "type": "module",
+  "main": "src/server.js",
+  "scripts": {
+    "dev": "node --watch src/server.js",
+    "start": "node src/server.js"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "dependencies": {
+    "ejs": "^3.1.10",
+    "express": "^5.2.0"
+  }
+}

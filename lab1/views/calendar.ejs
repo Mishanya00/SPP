@@ -1,0 +1,240 @@
+<%- include("partials/head") %>
+<header class="topbar">
+  <%- include("partials/logo") %>
+  <div class="topbar__actions">
+    <a class="button button--ghost button--mobile-hidden" href="#meeting-form">
+      <span class="icon"><%- include("partials/icons", { name: "plus" }) %></span>
+      Новая встреча
+    </a>
+    <div class="avatar" aria-label="Профиль пользователя">МК</div>
+  </div>
+</header>
+
+<main class="page-shell">
+  <section class="page-intro" aria-labelledby="page-heading">
+    <div>
+      <p class="eyebrow">Мой календарь</p>
+      <h1 id="page-heading">Ближайшие встречи</h1>
+      <p class="intro-copy">Планируйте время без лишнего шума — сегодня и на несколько дней вперёд.</p>
+    </div>
+    <div class="intro-stats" aria-label="Сводка календаря">
+      <div class="stat">
+        <span class="stat__icon stat__icon--violet"><%- include("partials/icons", { name: "calendar" }) %></span>
+        <span><strong><%= visibleCount %></strong> <%= meetingWord(visibleCount) %></span>
+      </div>
+      <div class="stat">
+        <span class="stat__icon stat__icon--mint"><%- include("partials/icons", { name: "clock" }) %></span>
+        <span><strong><%= visibleDuration %></strong> занято</span>
+      </div>
+    </div>
+  </section>
+
+  <% if (notice) { %>
+    <div class="notice" role="status">
+      <span class="notice__dot"></span>
+      <%= notice %>
+      <button class="notice__close" type="button" aria-label="Закрыть уведомление">×</button>
+    </div>
+  <% } %>
+
+  <div class="workspace">
+    <section class="calendar-card" aria-label="Календарь встреч">
+      <div class="calendar-toolbar">
+        <div>
+          <p class="toolbar-label">Период</p>
+          <h2><%= dateRange %></h2>
+        </div>
+        <nav class="view-switch" aria-label="Количество дней">
+          <a href="/?days=3" class="view-switch__item <%= view === 3 ? "is-active" : "" %>" <%- view === 3 ? 'aria-current="page"' : "" %>>3 дня</a>
+          <a href="/?days=7" class="view-switch__item <%= view === 7 ? "is-active" : "" %>" <%- view === 7 ? 'aria-current="page"' : "" %>>7 дней</a>
+        </nav>
+      </div>
+
+      <div class="calendar-scroll" tabindex="0">
+        <div class="calendar calendar--<%= view %>">
+          <div class="calendar__corner">
+            <span>GMT+3</span>
+          </div>
+          <% days.forEach((day) => { %>
+            <div class="day-header <%= day.isToday ? "is-today" : "" %>">
+              <span class="day-header__weekday"><%= day.isToday ? "Сегодня" : day.weekday %></span>
+              <span class="day-header__date"><%= day.dayNumber %></span>
+              <span class="day-header__month"><%= day.month %></span>
+              <span class="day-header__load"><%= day.totalMinutes ? `${formatDuration(day.totalMinutes)} занято` : "Свободный день" %></span>
+            </div>
+          <% }) %>
+
+          <div class="time-axis" aria-hidden="true">
+            <% hours.forEach((hour) => { %>
+              <span style="--top: <%= hour.top %>px"><%= hour.label %></span>
+            <% }) %>
+          </div>
+
+          <% days.forEach((day) => { %>
+            <div class="day-column" data-date="<%= day.isoDate %>" aria-label="<%= day.weekday %>, <%= day.dayNumber %> <%= day.month %>">
+              <% hours.forEach((hour) => { %>
+                <div class="hour-cell" style="--top: <%= hour.top %>px"></div>
+              <% }) %>
+
+              <% if (day.isToday) { %>
+                <div class="now-line" style="--top: <%= day.currentTop %>px" aria-label="Текущее время">
+                  <span></span>
+                </div>
+              <% } %>
+
+              <% if (!day.meetings.length) { %>
+                <div class="day-empty">
+                  <span>Пока свободно</span>
+                  <a href="#meeting-form">Запланировать</a>
+                </div>
+              <% } %>
+
+              <% day.meetings.forEach((meeting) => { %>
+                <article
+                  class="meeting meeting--<%= meeting.color %> <%= isEditing && form.id === meeting.id ? "is-editing" : "" %>"
+                  data-meeting-id="<%= meeting.id %>"
+                  style="--event-top: <%= meeting.top %>px; --event-height: <%= meeting.height %>px; --event-left: <%= meeting.left %>%; --event-width: <%= meeting.width %>%"
+                >
+                  <div class="meeting__body">
+                    <time><%= meeting.startTime %>–<%= meeting.endTime %></time>
+                    <h3><%= meeting.title %></h3>
+                    <% if (meeting.description) { %><p><%= meeting.description %></p><% } %>
+                  </div>
+                  <div class="meeting__actions">
+                    <a href="/?days=<%= view %>&edit=<%= meeting.id %>#meeting-form" aria-label="Редактировать встречу «<%= meeting.title %>»">
+                      <%- include("partials/icons", { name: "edit" }) %>
+                    </a>
+                    <form method="post" action="/meetings/<%= meeting.id %>/delete" data-delete-form>
+                      <input type="hidden" name="view" value="<%= view %>">
+                      <button type="submit" aria-label="Удалить встречу «<%= meeting.title %>»">
+                        <%- include("partials/icons", { name: "trash" }) %>
+                      </button>
+                    </form>
+                  </div>
+                </article>
+              <% }) %>
+            </div>
+          <% }) %>
+        </div>
+      </div>
+    </section>
+
+    <aside class="form-card" id="meeting-form">
+      <div class="form-card__heading">
+        <span class="form-card__icon"><%- include("partials/icons", { name: isEditing ? "edit" : "plus" }) %></span>
+        <div>
+          <p class="eyebrow"><%= isEditing ? "Изменение" : "Новое событие" %></p>
+          <h2><%= isEditing ? "Редактировать" : "Создать встречу" %></h2>
+        </div>
+      </div>
+
+      <% if (Object.keys(errors).length) { %>
+        <div class="form-error" role="alert">Проверьте выделенные поля</div>
+      <% } %>
+
+      <form class="meeting-form" method="post" action="<%= isEditing ? `/meetings/${form.id}/update` : "/meetings" %>">
+        <input type="hidden" name="view" value="<%= view %>">
+
+        <label class="field">
+          <span>Название</span>
+          <input
+            type="text"
+            name="title"
+            value="<%= form.title %>"
+            maxlength="80"
+            placeholder="Например, планёрка команды"
+            autocomplete="off"
+            required
+            aria-invalid="<%= Boolean(errors.title) %>"
+          >
+          <% if (errors.title) { %><small><%= errors.title %></small><% } %>
+        </label>
+
+        <div class="field-row">
+          <label class="field">
+            <span>Дата</span>
+            <input
+              type="date"
+              name="date"
+              value="<%= form.date %>"
+              min="<%= todayISO %>"
+              max="<%= maxDateISO %>"
+              required
+              aria-invalid="<%= Boolean(errors.date) %>"
+            >
+            <% if (errors.date) { %><small><%= errors.date %></small><% } %>
+          </label>
+          <label class="field">
+            <span>Начало</span>
+            <input
+              type="time"
+              name="startTime"
+              value="<%= form.startTime %>"
+              step="300"
+              required
+              aria-invalid="<%= Boolean(errors.startTime) %>"
+            >
+            <% if (errors.startTime) { %><small><%= errors.startTime %></small><% } %>
+          </label>
+        </div>
+
+        <label class="field">
+          <span>Продолжительность</span>
+          <div class="input-suffix">
+            <input
+              type="number"
+              name="duration"
+              value="<%= form.duration %>"
+              min="15"
+              max="480"
+              step="15"
+              required
+              aria-invalid="<%= Boolean(errors.duration) %>"
+            >
+            <span>минут</span>
+          </div>
+          <% if (errors.duration) { %><small><%= errors.duration %></small><% } %>
+          <span class="duration-picks" aria-label="Быстрый выбор продолжительности">
+            <% [30, 60, 90].forEach((duration) => { %>
+              <button type="button" data-duration="<%= duration %>"><%= duration %> мин</button>
+            <% }) %>
+          </span>
+        </label>
+
+        <label class="field">
+          <span>Описание <em>необязательно</em></span>
+          <textarea name="description" maxlength="240" rows="3" placeholder="Что важно обсудить?"><%= form.description %></textarea>
+          <% if (errors.description) { %><small><%= errors.description %></small><% } %>
+        </label>
+
+        <fieldset class="color-field">
+          <legend>Цвет в календаре</legend>
+          <div class="color-options">
+            <% colors.forEach((color) => { %>
+              <label class="color-option color-option--<%= color %>">
+                <input type="radio" name="color" value="<%= color %>" <%= form.color === color ? "checked" : "" %>>
+                <span></span>
+              </label>
+            <% }) %>
+          </div>
+        </fieldset>
+
+        <button class="button button--primary button--wide" type="submit">
+          <span><%= isEditing ? "Сохранить изменения" : "Добавить в календарь" %></span>
+          <span class="icon"><%- include("partials/icons", { name: "arrow" }) %></span>
+        </button>
+
+        <% if (isEditing) { %>
+          <a class="cancel-link" href="/?days=<%= view %>#meeting-form">Отменить редактирование</a>
+        <% } %>
+      </form>
+    </aside>
+  </div>
+</main>
+
+<footer class="footer">
+  <p>Рядом <span>·</span> спокойный календарь для важных встреч</p>
+  <p>Данные сохраняются на сервере</p>
+</footer>
+</body>
+</html>

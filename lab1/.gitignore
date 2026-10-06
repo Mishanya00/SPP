@@ -1,0 +1,12 @@
+node_modules/
+.DS_Store
+*.log
+.env
+coverage/
+test/
+task.txt
+*.docx
+docs/
+.agents/
+.codex/
+data/meetings.json
