@@ -1,7 +1,7 @@
-const secretKeys = /^(password|token|authorization|cookie|secret|api[_-]?key|.*_api_key)$/i;
+const secretKeys = /^(.*password|.*token|authorization|cookie|secret|api[_-]?key|.*_api_key)$/i;
 export function redact(value) {
   let text = String(value ?? '');
-  for (const secret of [process.env.DEEPSEEK_API_KEY]) if (secret) text = text.split(secret).join('[REDACTED]');
+  for (const secret of [process.env.DEEPSEEK_API_KEY, process.env.SMTP_PASSWORD]) if (secret) text = text.split(secret).join('[REDACTED]');
   return text.replace(/\d{5,}:[A-Za-z0-9_-]+/g, '[REDACTED]')
     .replace(/\bsk-[A-Za-z0-9_-]+/g, '[REDACTED]')
     .replace(/(Bearer\s+)[^\s"']+/gi, '$1[REDACTED]')

@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="referrer" content="no-referrer">
+  <title>Автобот — доступ к аккаунту</title>
+  <link rel="stylesheet" href="/access.css?v=roles-2">
+  <script src="/access.js?v=roles-2" defer></script>
+</head>
+<body><main>
+  <a href="/">← Вернуться в Автобот</a>
+  <h1>Доступ к аккаунту</h1>
+  <p id="notice" role="status" aria-live="polite"></p>
+  <section id="recovery">
+    <h2>Забыли пароль?</h2>
+    <form id="forgot"><label>Email<input name="email" type="email" required autocomplete="email"></label><button>Отправить ссылку</button></form>
+    <p>Для восстановления email должен быть заранее указан в аккаунте.</p>
+  </section>
+  <section id="reset-section" hidden>
+    <h2>Новый пароль</h2>
+    <form id="reset"><label>Пароль<input name="password" type="password" minlength="8" maxlength="128" required autocomplete="new-password"></label><button>Сменить пароль</button></form>
+  </section>
+  <section id="account" hidden>
+    <h2>Ваш аккаунт</h2><p id="identity"></p>
+    <h2>Активная роль</h2>
+    <p id="role-mode"></p>
+    <form id="role"><label>Работать как<select name="role" id="active-role"></select></label><button>Переключить роль</button></form>
+    <table class="permissions"><thead><tr><th>Возможность</th><th>viewer</th><th>user</th><th>admin</th></tr></thead><tbody>
+      <tr><td>Читать своих ботов, код и логи</td><td>Да</td><td>Да</td><td>Да</td></tr>
+      <tr><td>Создавать, запускать и изменять своих ботов</td><td>Нет</td><td>Да</td><td>Да</td></tr>
+      <tr><td>Видеть и управлять чужими ботами</td><td>Нет</td><td>Нет</td><td>Да</td></tr>
+      <tr><td>Просматривать пользователей</td><td>Нет</td><td>Нет</td><td>Да</td></tr>
+    </tbody></table>
+    <h3>Проверка прав</h3><p>Кнопки выполняют настоящую проверку доступа на сервере. Проекты при проверке не создаются и не изменяются.</p>
+    <div id="permission-checks"></div><p id="permission-result" role="status" aria-live="polite"></p>
+    <form id="email"><label>Email для восстановления<input name="email" type="email" required autocomplete="email"></label><label>Текущий пароль<input name="password" type="password" minlength="8" maxlength="128" required autocomplete="current-password"></label><button>Сохранить email</button></form>
+    <h2 id="sessions-heading">Активные сессии</h2><p>Это подключения вашего аккаунта. Текущая сессия помечена отдельно. Сессия действует 7 дней; одновременно доступны до пяти сессий.</p><button id="refresh-sessions" type="button">Обновить список</button><div id="sessions"></div>
+  </section>
+  <section id="admin" hidden><h2>Пользователи</h2><p>Постоянные роли назначает администратор аккаунта. После такого изменения пользователь входит заново. Переключатель активной роли выше не требует повторного входа.</p><div id="users"></div></section>
+</main></body></html>

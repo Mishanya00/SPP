@@ -1,13 +1,14 @@
 import express from 'express';
-import rateLimit from 'express-rate-limit';
 import multer from 'multer';
 import { z } from 'zod';
-import { randomUUID, randomBytes, createHash } from 'node:crypto';
+import { randomUUID } from 'node:crypto';
 import { rm } from 'node:fs/promises';
 import { existsSync } from 'node:fs';
 import { resolve } from 'node:path';
 import { db, getBot, publicBot, event, dataDir } from './db.js';
-import { encrypt, hashPassword, verifyPassword } from './security.js';
+import { encrypt } from './security.js';
+import { authRouter, authenticate, requireAdmin, requireAssignedAdmin } from './auth.js';
+import { can } from './roles.js';
 import { telegram } from './telegram.js';
 import { generate, startBot, stopBot, removeRuntime, locked, busy, getLogs } from './runtime.js';
 import { log, redact } from './logger.js';
@@ -19,9 +20,9 @@ app.use((req, res, next) => {
   req.requestId = randomUUID();
   res.set('X-Request-Id', req.requestId);
   res.on('finish', () => {
-    if (req.method !== 'GET' || res.statusCode >= 400) log(res.statusCode >= 500 ? 'error' : 'info', 'HTTP request', {
+    if (req.path.startsWith('/api') || res.statusCode >= 400) log(res.statusCode >= 500 ? 'error' : 'info', 'HTTP request', {
       requestId: req.requestId, method: req.method, route: req.route?.path || 'unmatched',
-      status: res.statusCode, durationMs: Date.now() - started, botId: req.bot?.id
+      status: res.statusCode, durationMs: Date.now() - started, botId: req.bot?.id, userId: req.user?.id, role: req.user?.role
     });
   });
   next();
@@ -29,47 +30,21 @@ app.use((req, res, next) => {
 app.use((req, res, next) => {
   res.set({ 'X-Content-Type-Options': 'nosniff', 'X-Frame-Options': 'DENY', 'Referrer-Policy': 'no-referrer' });
   if (req.path.startsWith('/api')) res.set('Cache-Control', 'no-store');
-  if (!['GET', 'HEAD', 'OPTIONS'].includes(req.method) && req.headers.origin && new URL(req.headers.origin).host !== req.headers.host) return res.status(403).json({ error: 'Недопустимый источник запроса.' });
+  if (!['GET', 'HEAD', 'OPTIONS'].includes(req.method) && req.headers.origin) {
+    let origin;
+    try { origin = new URL(req.headers.origin); } catch { fail(400, 'Некорректный Origin.'); }
+    if (origin.host !== req.headers.host) return res.status(403).json({ error: 'Недопустимый источник запроса.' });
+  }
   next();
 });
 app.use(express.json({ limit: '128kb' }));
-const authLimit = rateLimit({ windowMs: 15 * 60000, limit: 30, message: { error: 'Слишком много попыток. Подождите 15 минут.' } });
-const credentials = z.object({ username: z.string().regex(/^[a-zA-Z0-9_]{3,32}$/, 'Имя: 3–32 латинские буквы, цифры или _.'), password: z.string().min(8, 'Пароль: минимум 8 символов.').max(128) }).strict();
-const digest = value => createHash('sha256').update(value).digest('hex');
-const cookieOptions = { httpOnly: true, sameSite: 'strict', secure: process.env.COOKIE_SECURE === 'true', path: '/' };
-function sessionId(req) { return req.headers.cookie?.split('; ').find(v => v.startsWith('session='))?.slice(8); }
-function login(res, user) {
-  const token = randomBytes(32).toString('hex');
-  db.prepare('DELETE FROM sessions WHERE expires < ?').run(Date.now());
-  db.prepare('INSERT INTO sessions VALUES (?, ?, ?)').run(digest(token), user.id, Date.now() + 7 * 86400000);
-  res.cookie('session', token, { ...cookieOptions, maxAge: 7 * 86400000 });
-  return { id: user.id, username: user.username };
-}
-app.post('/api/auth/register', authLimit, async (req, res) => {
-  const { username, password } = credentials.parse(req.body);
-  const user = { id: randomUUID(), username: username.toLowerCase() };
-  const hash = await hashPassword(password);
-  try { db.prepare('INSERT INTO users VALUES (?, ?, ?)').run(user.id, user.username, hash); }
-  catch (e) { if (String(e.message).includes('UNIQUE')) fail(409, 'Это имя пользователя уже занято.'); throw e; }
-  res.status(201).json(login(res, user));
-});
-app.post('/api/auth/login', authLimit, async (req, res) => {
-  const { username, password } = credentials.parse(req.body);
-  const user = db.prepare('SELECT * FROM users WHERE username = ?').get(username.toLowerCase());
-  if (!user || !await verifyPassword(password, user.password)) fail(401, 'Неверное имя пользователя или пароль.');
-  res.json(login(res, user));
-});
-app.post('/api/auth/logout', (req, res) => {
-  db.prepare('DELETE FROM sessions WHERE id = ?').run(digest(sessionId(req) || ''));
-  res.clearCookie('session', cookieOptions).status(204).end();
-});
-app.use('/api', (req, res, next) => {
-  req.user = db.prepare('SELECT users.id, users.username FROM sessions JOIN users ON users.id = sessions.user_id WHERE sessions.id = ? AND expires > ?').get(digest(sessionId(req) || ''), Date.now());
-  if (!req.user) return res.status(401).json({ error: 'Войдите в аккаунт.' });
+app.use('/api/auth', authRouter);
+app.use('/api', authenticate);
+app.use('/api/bots', (req, res, next) => {
+  if (!can(req.user.role, 'manageBots') && !['GET', 'HEAD', 'OPTIONS'].includes(req.method)) return res.status(403).json({ error: 'Роль viewer разрешает только просмотр.' });
   next();
 });
-app.get('/api/auth/me', (req, res) => res.json(req.user));
-app.get('/api/bots', (req, res) => res.json(db.prepare('SELECT * FROM bots WHERE user_id = ? ORDER BY created_at DESC, rowid DESC').all(req.user.id).map(publicBot)));
+app.get('/api/bots', (req, res) => res.json((req.user.role === 'admin' ? db.prepare('SELECT * FROM bots ORDER BY created_at DESC, rowid DESC').all() : db.prepare('SELECT * FROM bots WHERE user_id = ? ORDER BY created_at DESC, rowid DESC').all(req.user.id)).map(publicBot)));
 app.post('/api/bots', (req, res) => {
   const { prompt } = z.object({ prompt: z.string().trim().min(10, 'Опишите бота подробнее: минимум 10 символов.').max(4000) }).strict().parse(req.body);
   if (!process.env.DEEPSEEK_API_KEY) fail(503, 'На сервере не настроен DEEPSEEK_API_KEY. Добавьте ключ в .env.');
@@ -83,7 +58,7 @@ app.post('/api/bots', (req, res) => {
 });
 app.param('id', (req, res, next, id) => {
   req.bot = getBot(id);
-  if (!req.bot || req.bot.user_id !== req.user.id) return res.status(404).json({ error: 'Бот не найден.' });
+  if (!req.bot || (req.bot.user_id !== req.user.id && req.user.role !== 'admin')) return res.status(404).json({ error: 'Бот не найден.' });
   next();
 });
 app.get('/api/bots/:id', (req, res) => res.json(publicBot(req.bot)));
@@ -163,15 +138,37 @@ app.delete('/api/bots/:id', async (req, res) => {
   });
   res.status(204).end();
 });
+app.get('/api/users', requireAdmin, (req, res) => res.json(db.prepare('SELECT id, username, role, email FROM users ORDER BY username').all()));
+app.put('/api/users/:userId/role', requireAdmin, requireAssignedAdmin, (req, res) => {
+  const { role } = z.object({ role: z.enum(['viewer', 'user', 'admin']) }).strict().parse(req.body);
+  const user = db.prepare('SELECT id, username, role, email FROM users WHERE id = ?').get(req.params.userId);
+  if (!user) fail(404, 'Пользователь не найден.');
+  if (user.role === 'admin' && role !== 'admin' && db.prepare("SELECT count(*) AS n FROM users WHERE role = 'admin'").get().n === 1) fail(409, 'Нельзя понизить роль последнего администратора.');
+  if (user.role !== role) {
+    db.prepare('UPDATE users SET role = ? WHERE id = ?').run(role, user.id);
+    db.prepare('DELETE FROM sessions WHERE user_id = ?').run(user.id);
+    log('info', 'Роль пользователя изменена; сессии отозваны', { requestId: req.requestId, userId: req.user.id, targetUserId: user.id, role });
+  }
+  res.json({ ...user, role });
+});
+for (const [path, allow] of [
+  ['/api/bots', 'GET, HEAD, POST'], ['/api/bots/:id', 'GET, HEAD, PUT, DELETE'],
+  ['/api/bots/:id/logs', 'GET, HEAD'], ['/api/bots/:id/code', 'GET, HEAD'],
+  ['/api/bots/:id/token', 'PUT'], ['/api/bots/:id/avatar', 'GET, HEAD, POST, DELETE'],
+  ['/api/bots/:id/start', 'POST'], ['/api/bots/:id/stop', 'POST'], ['/api/bots/:id/retry', 'POST'],
+  ['/api/users', 'GET, HEAD'], ['/api/users/:userId/role', 'PUT']
+]) app.all(path, (req, res) => res.set('Allow', allow).status(405).json({ error: 'Метод не поддерживается.' }));
 app.use('/api', (req, res) => res.status(404).json({ error: 'Маршрут не найден.' }));
+app.use(express.static(resolve('public'), { setHeaders: res => res.set('Cache-Control', 'no-store') }));
 app.use(express.static(resolve('dist')));
 app.get('/{*path}', (req, res) => res.sendFile(resolve('dist/index.html')));
 app.use((error, req, res, next) => {
   // Parse errors can include raw request bodies; log only unexpected errors in detail.
   log('error', 'Request failed', { requestId: req.requestId, botId: req.bot?.id, error: error.type || (error instanceof z.ZodError ? 'Validation error' : error) });
   if (error instanceof z.ZodError) return res.status(422).json({ error: error.issues.map(v => v.message).join(' ') });
-  if (error instanceof multer.MulterError) return res.status(422).json({ error: 'Нужен один JPG-файл размером до 5 МБ.' });
+  if (error instanceof multer.MulterError) return res.status(error.code === 'LIMIT_FILE_SIZE' ? 413 : 422).json({ error: 'Нужен один JPG-файл размером до 5 МБ.' });
   if (error.type === 'entity.parse.failed') return res.status(400).json({ error: 'Некорректный JSON.' });
   if (error.type === 'entity.too.large') return res.status(413).json({ error: 'Слишком большой запрос.' });
+  if (error.status === 401) res.set('WWW-Authenticate', 'Bearer realm="autobot"');
   res.status(error.status || 500).json({ error: error.status ? redact(error.message) : 'Ошибка сервера. Проверьте логи приложения и повторите попытку.' });
 });

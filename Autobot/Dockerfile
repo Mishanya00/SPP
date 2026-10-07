@@ -5,6 +5,7 @@ ENV NODE_ENV=production DATA_DIR=/data PORT=3000
 COPY package*.json ./
 RUN npm ci --omit=dev
 COPY server ./server
+COPY public ./public
 COPY runner/validate.py ./runner/validate.py
 COPY dist ./dist
 EXPOSE 3000

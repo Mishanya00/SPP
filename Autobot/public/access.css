@@ -1,0 +1,18 @@
+* { box-sizing: border-box; }
+body { margin: 0; background: #f5f7fa; color: #223047; font: 16px/1.5 system-ui, sans-serif; }
+main { max-width: 760px; margin: 35px auto; padding: 0 20px; }
+section { padding: 20px; background: white; border: 1px solid #dce3eb; border-radius: 12px; margin: 20px 0; }
+h1, h2 { line-height: 1.2; } h2 { font-size: 21px; }
+a { color: #25549a; } label { display: block; margin: 12px 0; }
+input, select { display: block; width: 100%; padding: 9px; margin-top: 5px; font: inherit; border: 1px solid #aab8c9; border-radius: 6px; }
+button { padding: 9px 14px; border: 0; border-radius: 6px; background: #25549a; color: white; font: inherit; cursor: pointer; }
+button:disabled { opacity: .6; cursor: wait; }
+.item { padding: 13px 0; border-top: 1px solid #dce3eb; overflow-wrap: anywhere; }
+.item p { margin: 5px 0 10px; } .item select { max-width: 200px; margin: 8px 0; }
+#notice { min-height: 24px; color: #25549a; } #notice.error { color: #a12020; }
+[hidden] { display: none; }
+.permissions { width: 100%; border-collapse: collapse; font-size: 14px; margin: 16px 0; }
+.permissions th, .permissions td { padding: 8px 5px; border-bottom: 1px solid #dce3eb; text-align: left; }
+.permissions .active { background: #e8f0ff; font-weight: 600; }
+#permission-checks { display: flex; flex-wrap: wrap; gap: 8px; }
+#permission-result.error { color: #a12020; }
