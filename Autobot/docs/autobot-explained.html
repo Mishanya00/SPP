@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="ru">
+<meta charset="utf-8">
+<title>Устройство Автобота</title>
+<style>
+  @page { size: A4; margin: 15mm 17mm; }
+  * { box-sizing: border-box; }
+  body { margin: 0; color: #243247; font: 10.5pt/1.43 "DejaVu Sans", sans-serif; }
+  .page { break-after: page; }
+  .page:last-child { break-after: auto; font-size: 10pt; line-height: 1.4; }
+  .eyebrow { color: #526b88; font-size: 8pt; letter-spacing: 1.2px; text-transform: uppercase; }
+  h1 { font-size: 25pt; line-height: 1.15; margin: 8px 0 12px; color: #142b47; }
+  h2 { font-size: 12pt; margin: 17px 0 7px; color: #173a61; }
+  p { margin: 0 0 8px; }
+  .lead { font-size: 11pt; }
+  .diagram { margin: 13px 0; padding: 12px; background: #eef4fa; border: 1px solid #d6e3ef; border-radius: 8px; }
+  .row { display: flex; align-items: center; justify-content: center; gap: 8px; }
+  .box { padding: 9px 8px; border: 1px solid #b7cce0; border-radius: 6px; background: white; text-align: center; flex: 1; }
+  .box strong { color: #153b62; }
+  .box span { display: block; font-size: 8pt; margin-top: 2px; }
+  .arrow { font-size: 16pt; color: #527ea5; }
+  .diagram-note { text-align: center; font-size: 8.5pt; margin: 9px 0 0; }
+  table { border-collapse: collapse; width: 100%; font-size: 9.5pt; }
+  td { padding: 6px 0; vertical-align: top; border-bottom: 1px solid #e3e9ef; }
+  td:first-child { width: 30%; padding-right: 12px; color: #173a61; font-weight: bold; }
+  ol, ul { margin: 6px 0 8px; padding-left: 21px; }
+  li { margin: 0 0 6px; padding-left: 2px; }
+  .callout { background: #eef4fa; border-left: 3px solid #5685b0; padding: 11px 13px; margin-top: 10px; }
+  .callout p:last-child { margin-bottom: 0; }
+  .small { font-size: 8pt; color: #64758a; margin-top: 13px; }
+  strong { color: #183552; }
+</style>
+<body>
+<section class="page">
+  <div class="eyebrow">Объяснение проекта · 1 / 2</div>
+  <h1>Как устроен Автобот</h1>
+  <p class="lead"><strong>Автобот — веб-приложение, которое создаёт Telegram-ботов по текстовому описанию.</strong> Пользователь описывает нужное поведение, DeepSeek генерирует Python-код, а приложение проверяет его и запускает в отдельном Docker-контейнере.</p>
+
+  <div class="diagram">
+    <div class="row">
+      <div class="box"><strong>Веб-интерфейс</strong><span>описание, токен, управление</span></div>
+      <div class="arrow">↔</div>
+      <div class="box"><strong>Сервер Автобота</strong><span>API, база, генерация, Docker</span></div>
+      <div class="arrow">↔</div>
+      <div class="box"><strong>DeepSeek API</strong><span>создание и исправление кода</span></div>
+    </div>
+    <p class="diagram-note">Сервер сохраняет проект в SQLite и запускает Python-бота в Docker.<br>Запущенный бот получает сообщения из Telegram и отвечает через Telegram API.</p>
+  </div>
+
+  <h2>Из каких частей состоит система</h2>
+  <table>
+    <tr><td>Интерфейс</td><td>React и TypeScript. Пользователь регистрируется, описывает бота, добавляет Telegram-токен, смотрит состояние, код и логи, запускает или останавливает проект.</td></tr>
+    <tr><td>Сервер</td><td>Node.js и Express. Принимает запросы интерфейса, проверяет права пользователя, обращается к DeepSeek и Telegram, управляет контейнерами через Docker CLI.</td></tr>
+    <tr><td>Хранилище</td><td>SQLite содержит пользователей, сессии, проекты, сгенерированный код и журналы. Каталог <strong>data/</strong> сохраняет базу, ключ шифрования и файлы проектов.</td></tr>
+    <tr><td>Среда ботов</td><td>Отдельный контейнер на Python 3.12 с aiogram 3 для каждого бота. Общий образ содержит необходимые зависимости и загрузчик Python-кода.</td></tr>
+  </table>
+
+  <h2>Что происходит при создании бота</h2>
+  <ol>
+    <li><strong>Описание сохраняется.</strong> Сервер создаёт проект со статусом «генерируется». Интерфейс получает ответ сразу; долгая генерация продолжается в фоне.</li>
+    <li><strong>Составляется запрос к DeepSeek.</strong> Системный промпт объясняет среду запуска, работу с токенами и формат результата. Пользовательское описание задаёт функциональность.</li>
+    <li><strong>Модель возвращает JSON с названием и кодом.</strong> Сервер разбирает ответ, записывает <strong>main.py</strong> и проверяет синтаксис Python.</li>
+    <li><strong>Ошибки исправляются автоматически.</strong> Если JSON или код некорректны, предыдущий ответ и ошибка отправляются модели. Возможны первоначальная генерация и до трёх исправлений.</li>
+    <li><strong>Проект становится готовым.</strong> Если Telegram-токен уже добавлен, начинается запуск. Иначе приложение предлагает добавить его.</li>
+  </ol>
+  <p class="small">Важно: синтаксическая проверка обнаруживает ошибки языка, но не гарантирует правильность поведения. После запуска работу бота нужно проверить в Telegram.</p>
+</section>
+
+<section class="page">
+  <div class="eyebrow">Объяснение проекта · 2 / 2</div>
+  <h1>Запуск и работа ботов</h1>
+
+  <h2>Как бот связывается с Telegram</h2>
+  <p>Пользователь создаёт Telegram-бота через <strong>BotFather</strong> и добавляет его токен в Автобот. Сервер проверяет токен методом <strong>getMe</strong> и не разрешает привязать одного Telegram-бота к нескольким проектам.</p>
+  <p>При запуске сервер обновляет профиль бота, отключает webhook, копирует код в отдельный том и создаёт контейнер. Токен передаётся через переменную окружения <strong>BOT_TOKEN</strong>. Затем aiogram запускает <strong>long polling</strong>: регулярно запрашивает у Telegram новые сообщения и передаёт их подходящим обработчикам.</p>
+  <p>Обработчики отвечают на команды, текст, фото и нажатия кнопок. Для многошагового диалога используются состояния FSM: бот запоминает, какого ответа он сейчас ожидает.</p>
+
+  <h2>Две роли DeepSeek</h2>
+  <p><strong>При создании</strong> DeepSeek пишет и исправляет исходный код. <strong>Во время работы</strong> он нужен только тем ботам, которым требуются AI-ответы, например Пушкин-боту. Обычный бот с меню или фиксированными ответами работает без обращения к модели.</p>
+  <p>Ботам, использующим DeepSeek, сервер передаёт <strong>DEEPSEEK_API_KEY</strong>, <strong>DEEPSEEK_BASE_URL</strong> и <strong>DEEPSEEK_MODEL</strong>. Их обращения используют серверный ключ и его API-баланс.</p>
+
+  <h2>Данные, изоляция и контроль</h2>
+  <ul>
+    <li><strong>Данные переживают остановку.</strong> Код и данные бота находятся в отдельных Docker-томах. Код доступен только для чтения; рабочие данные сохраняются в <strong>/data</strong>. При перезапуске теряется лишь состояние в памяти.</li>
+    <li><strong>Каждый бот работает отдельно.</strong> Контейнер ограничен по памяти, CPU и числу процессов, запускается без прав root. Проверяется только синтаксис кода; разрешены стандартная библиотека, комментарии и любой стиль кавычек.</li>
+    <li><strong>Секреты защищаются.</strong> Пароли хешируются с scrypt, Telegram-токены шифруются с AES-GCM. Ключи передаются через окружение, а в журналах скрываются.</li>
+    <li><strong>Состояние отслеживается.</strong> Проект проходит этапы «генерируется → готов → запущен». При остановке получает статус «остановлен», при сбое — «ошибка». Сервер проверяет работающие контейнеры каждые 10 секунд; события и вывод Python доступны в логах.</li>
+  </ul>
+
+  <h2>Как объяснить проект за минуту</h2>
+  <div class="callout">
+    <p>«Автобот создаёт Telegram-ботов по описанию на сайте. Сервер просит DeepSeek написать Python-код, проверяет его и отправляет ошибки модели на исправление.</p>
+    <p>После добавления токена от BotFather бот запускается в отдельном Docker-контейнере. Через aiogram он получает сообщения Telegram и отвечает на них. Сайт позволяет управлять ботом и смотреть логи, а SQLite и Docker-тома сохраняют проекты и данные. Если боту нужны AI-ответы, он обращается к DeepSeek во время диалога».</p>
+  </div>
+  <p class="small">Основано на текущем коде проекта на 07.10.2026: server/app.js, runtime.js, db.js, security.js, bot-environment.js; runner/; compose.yaml.</p>
+</section>
+</body>
+</html>

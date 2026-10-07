@@ -1,0 +1,9 @@
+{
+  "container": "lab2-app-1",
+  "original_directory": "/home/mishanya00/Education/University/Sem7/SPP/lab2",
+  "app_image": "sha256:a60dc010c84b6b4e5030d8e6ae3f9c6b38e6b6f0ae1417889420ab410a6168f5",
+  "runner_image": "sha256:3d7027f8cdb9e8d064f8d9a7da4175b6d990bff5b3dd5cb3d67246d04489a290",
+  "python_version": "3.12.14",
+  "frontend_sources_recovered": false,
+  "database_backup": "SQLite VACUUM INTO; includes encryption.key"
+}
