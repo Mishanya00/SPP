@@ -1,6 +1,6 @@
 // Cache only the application shell, never API responses or credentials.
 const prefix = `atlas-shell:${self.registration.scope}:`;
-const cacheName = `${prefix}v2`;
+const cacheName = `${prefix}v3`;
 const files = ['./', './index.html', './style.css', './app.js', './shared.js', './config.js', './favicon.svg'].map(path => new URL(path, self.registration.scope).href);
 self.addEventListener('install', event => {
   event.waitUntil(caches.open(cacheName).then(cache => cache.addAll(files)).then(() => self.skipWaiting()));

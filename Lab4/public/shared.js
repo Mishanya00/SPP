@@ -34,3 +34,11 @@ export const SAFE_SYSTEMS = new Set(Object.values(RACES).map(race => race.home))
 export const ESCAPE_MS = 400;
 export const weaponDamage = player => ({ min: 2 + (player.weaponLevel || 0) * 1.5, max: 4.5 + (player.weaponLevel || 0) * 2.5 });
 export const weaponCost = player => 650 + (player.weaponLevel || 0) * 500;
+
+// randomUUID requires HTTPS (except localhost); getRandomValues also works on HTTP.
+// Action IDs are opaque deduplication keys, not authentication tokens.
+export function createActionId(cryptoProvider = globalThis.crypto) {
+  if (typeof cryptoProvider.randomUUID === 'function') return cryptoProvider.randomUUID();
+  const bytes = cryptoProvider.getRandomValues(new Uint8Array(16));
+  return Array.from(bytes, byte => byte.toString(16).padStart(2, '0')).join('');
+}

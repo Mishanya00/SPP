@@ -1,4 +1,4 @@
-import { RACES, STARS, STAR_BY_ID, distance, fuelCost, flightSeconds, cargoUsed, refuelCost, repairCost, upgradeCost, SAFE_SYSTEMS, ESCAPE_MS, weaponDamage, weaponCost } from './shared.js';
+import { RACES, STARS, STAR_BY_ID, distance, fuelCost, flightSeconds, cargoUsed, refuelCost, repairCost, upgradeCost, SAFE_SYSTEMS, ESCAPE_MS, weaponDamage, weaponCost, createActionId } from './shared.js';
 
 const $ = selector => document.querySelector(selector);
 const escapeHTML = value => String(value).replace(/[&<>"']/g, char => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[char]);
@@ -131,7 +131,7 @@ function connect() {
 }
 function act(type, extra = {}) {
   if (!state || busy()) return;
-  pending = { id: crypto.randomUUID(), revision: state.player.revision, type, ...extra };
+  pending = { id: createActionId(), revision: state.player.revision, type, ...extra };
   storage.set(`pending:${token}`, pending);
   sendPending(); connectionUI(); renderSide();
 }
