@@ -1,0 +1,15 @@
+{
+  "name": "star-atlas",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Многопользовательская космическая игра на чистом JavaScript",
+  "engines": { "node": ">=22" },
+  "scripts": {
+    "start": "node server/index.js",
+    "dev": "node --watch server/index.js",
+    "test": "node --test",
+    "check": "node --check server/index.js && node --check server/game.js && node --check server/store.js && node --check public/app.js && node --check public/shared.js && node --check public/sw.js"
+  },
+  "dependencies": { "ws": "^8.18.3" }
+}

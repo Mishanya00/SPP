@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#101715">
+  <meta name="description" content="Атлас — многопользовательская космическая игра. Пять цивилизаций, пятьдесят звёзд и ваш путь среди них.">
+  <title>АТЛАС · Дальше знакомых звёзд</title>
+  <link rel="icon" href="./favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="./style.css">
+  <script src="./config.js"></script>
+  <script type="module" src="./app.js"></script>
+</head>
+<body>
+  <main id="onboarding" class="onboarding">
+    <section class="intro">
+      <a class="brand" href="./"><img src="./favicon.svg" alt="" width="42" height="42"> АТЛАС <span>SPACE EXPLORER</span></a>
+      <div class="intro-copy"><div class="eyebrow">ЛИЧНЫЙ БОРТОВОЙ ЖУРНАЛ / 01</div><h1>Дальше<br>знакомых <em>звёзд.</em></h1><p>Пять цивилизаций. Пятьдесят систем.<br>Одна галактика, в которой есть место вашей истории.</p><div class="intro-tags"><span>Общий мир</span><span>Свободные перелёты</span><span>Торговля</span></div></div>
+      <div class="planet-art" aria-hidden="true"><div class="planet-orbit"></div><div class="planet"></div><span class="planet-label">SOL SYSTEM<br><b>27.4 / 58.1</b></span></div>
+      <div class="intro-footer"><span class="tiny-dot"></span> СИГНАЛ ИЗ ДАЛЬНЕГО КОСМОСА <span>✦</span></div>
+    </section>
+    <section class="enrollment">
+      <div class="auth-tabs" role="tablist" aria-label="Аккаунт"><button class="active" id="register-tab" role="tab" aria-selected="true">Новый капитан</button><button id="login-tab" role="tab" aria-selected="false">Войти на борт</button></div>
+      <form id="auth-form">
+        <span class="eyebrow">ДОБРО ПОЖАЛОВАТЬ НА БОРТ</span><h2 id="auth-title">Каждый путь<br>начинается с выбора.</h2>
+        <div class="form-row"><label>Позывной<input id="username" name="username" autocomplete="username" placeholder="Например, Орион" minlength="3" maxlength="20" required></label><label>Пароль<input id="password" name="password" type="password" autocomplete="new-password" placeholder="От 8 символов" minlength="8" maxlength="128" required></label></div>
+        <fieldset id="race-fieldset"><legend>Ваша цивилизация <span>01 — 05</span></legend><div id="race-options" class="race-options"></div><div id="race-details" class="race-details"></div></fieldset>
+        <p id="auth-error" role="alert" class="error"></p><button id="auth-submit" class="button primary auth-submit" type="submit">Начать путешествие <span>↗</span></button>
+        <p class="auth-note">Прогресс сохраняется. Галактика живёт в реальном времени.</p>
+      </form>
+    </section>
+  </main>
+
+  <main id="game" class="game hidden">
+    <header class="topbar"><a class="brand" href="./"><img src="./favicon.svg" alt="" width="36" height="36"> АТЛАС <span>БОРТОВАЯ СИСТЕМА</span></a><div class="top-location"><span class="eyebrow">ТЕКУЩАЯ СИСТЕМА</span><strong id="current-system">—</strong></div><div class="wallet"><span class="eyebrow">НА СЧЕТУ</span><strong><span id="credits">0</span> <small>кр.</small></strong></div><button id="captain-button" class="captain-button" title="Открыть данные корабля"><span id="captain-avatar">◈</span><span id="captain-name">Капитан</span></button></header>
+    <div id="connection-banner" class="connection-banner hidden" role="status"></div>
+    <div class="workspace">
+      <nav class="rail" aria-label="Навигация"><button data-view="galaxy" class="rail-button active" aria-label="Галактика" title="Галактика">✧</button><button data-view="contracts" class="rail-button" aria-label="Мои заказы" title="Мои заказы">▤</button><button data-view="ship" class="rail-button" aria-label="Мой корабль" title="Мой корабль">♢</button><button data-view="pilots" class="rail-button" aria-label="Капитаны" title="Капитаны">♧</button><div class="rail-bottom"><button id="help-button" class="rail-button" aria-label="Как играть" title="Как играть">?</button><button id="logout" class="rail-button" aria-label="Выйти" title="Выйти">⇥</button></div></nav>
+      <section class="main-panel">
+        <div class="map-heading"><div><div class="eyebrow">НАВИГАЦИЯ / ИЗВЕСТНЫЙ КОСМОС</div><h1>Карта галактики<span class="map-total">50 систем</span></h1></div><div id="online-status" class="status"><span class="tiny-dot"></span><span>Подключение</span></div></div>
+        <div class="map-toolbar"><label class="search"><span>⌕</span><input id="star-search" type="search" placeholder="Найти систему…" aria-label="Найти систему"></label><button id="range-toggle" class="small-button active" aria-pressed="true">◎ Радиус прыжка</button><button id="home-button" class="small-button">⌖ Мой корабль</button></div>
+        <div class="star-map" id="map-container"><svg id="galaxy" viewBox="0 0 1040 720" role="group" aria-label="Интерактивная карта 50 звёздных систем"></svg><div class="map-coordinate">СЕКТОР 01—05<br><span>ГАЛАКТИЧЕСКАЯ СЕТЬ / 3300</span></div><div class="zoom-controls"><button id="zoom-in" aria-label="Приблизить карту">+</button><button id="zoom-out" aria-label="Отдалить карту">−</button><button id="zoom-reset" aria-label="Сбросить масштаб">⌖</button></div><div id="travel-overlay" class="travel-overlay hidden"></div></div>
+        <div class="map-legend" id="map-legend"></div>
+        <section class="flight-log"><div class="section-title"><h2>Бортовой журнал</h2><span>ПОСЛЕДНИЕ СОБЫТИЯ</span></div><div id="log-entries"></div></section>
+      </section>
+      <aside class="side-panel"><div id="side-content"></div><div class="side-footer"><span class="tiny-dot"></span><span id="save-status">Синхронизация с галактической сетью</span></div></aside>
+    </div>
+    <footer class="bottom-bar"><span>АТЛАС <b> / </b> ЭРА СВОБОДНЫХ КАПИТАНОВ</span><span id="ship-summary"></span><span>ГАЛАКТИКА ОТКРЫТА ДЛЯ ВАС ↗</span></footer>
+  </main>
+  <div id="toast" class="toast hidden" role="status" aria-live="polite"></div>
+  <dialog id="help-dialog"><button class="dialog-close" id="close-help" aria-label="Закрыть">×</button><div class="eyebrow">ПАМЯТКА КАПИТАНА</div><h2>Ваш первый рейс</h2><ol><li>На своей станции откройте <b>«Заказы»</b> и примите груз. Трюм вмещает до трёх заказов.</li><li>Нажмите на пункт назначения заказа: он выделится на карте. Кнопка <b>«Гиперпрыжок»</b> отправит корабль в путь.</li><li>После прибытия откройте <b>«Мои заказы»</b> и сдайте груз. Награда сразу поступит на счёт.</li><li>На любой станции можно заправиться, починить и улучшить корабль. Система вне радиуса? Летите через промежуточную звезду.</li></ol><p>Заказы общие: забрать груз может только один капитан. Корабли других игроков видны на карте. При обрыве связи последнее состояние остаётся на экране, а отправленное действие проверяется после подключения.</p><button id="help-done" class="button primary">Понятно, к звёздам ↗</button></dialog>
+  <noscript>Для игры включите JavaScript в браузере.</noscript>
+</body>
+</html>

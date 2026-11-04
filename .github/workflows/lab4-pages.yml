@@ -1,0 +1,41 @@
+name: Publish Lab4 Star Atlas
+on:
+  workflow_dispatch:
+    inputs:
+      server_url:
+        description: 'HTTPS URL of the game server, e.g. https://atlas.example.com (no trailing path)'
+        type: string
+        required: true
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+concurrency:
+  group: lab4-pages
+  cancel-in-progress: false
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v6
+      - name: Configure backend
+        env:
+          SERVER_URL: ${{ inputs.server_url }}
+        run: |
+          node --input-type=module <<'JS'
+          import { writeFileSync } from 'node:fs';
+          const url = new URL(process.env.SERVER_URL);
+          if (url.protocol !== 'https:' || url.pathname !== '/' || url.username || url.password || url.search || url.hash) {
+            throw new Error('Provide an HTTPS server origin without a path or credentials.');
+          }
+          writeFileSync('Lab4/public/config.js', `window.STAR_ATLAS_SERVER = ${JSON.stringify(url.origin)};\n`);
+          JS
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v4
+        with:
+          path: Lab4/public
+      - uses: actions/deploy-pages@v4
+        id: deployment
