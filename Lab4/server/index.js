@@ -6,7 +6,7 @@ import { randomBytes, scrypt, timingSafeEqual, createHash } from 'node:crypto';
 import { promisify } from 'node:util';
 import { WebSocketServer, WebSocket } from 'ws';
 import { Store } from './store.js';
-import { GameError, newPlayer, applyAction, finishFlights, snapshot } from './game.js';
+import { GameError, newPlayer, applyAction, finishFlights, snapshot, advanceCombat, migrateWorld } from './game.js';
 import { RACES } from '../public/shared.js';
 
 const deriveKey = promisify(scrypt);
@@ -16,6 +16,7 @@ const SESSION_MS = 30 * 24 * 60 * 60 * 1000;
 
 export function createGameServer({ dataDir = process.env.DATA_DIR || resolve(root, 'data'), allowedOrigins = (process.env.ALLOWED_ORIGINS || '').split(',').filter(Boolean), now = Date.now } = {}) {
   const store = new Store(dataDir);
+  migrateWorld(store.state, now());
   const wss = new WebSocketServer({ noServer: true, maxPayload: 4096 });
   const limits = new Map();
   let activeHashes = 0;
@@ -172,9 +173,9 @@ export function createGameServer({ dataDir = process.env.DATA_DIR || resolve(roo
     ws.on('close', () => { clearTimeout(authTimeout); publish(); });
   });
   const arrivals = setInterval(() => {
-    if (!Object.values(store.state.users).some(({ player }) => player.journey?.arrivesAt <= now())) return;
-    try { store.transact(state => finishFlights(state, now())); publish(); } catch (error) { console.error('Could not save arrivals', error); }
-  }, 250);
+    if (!store.state.engagements.length && !Object.values(store.state.users).some(({ player }) => player.journey?.arrivesAt <= now())) return;
+    try { store.transact(state => { advanceCombat(state, now()); finishFlights(state, now()); }); publish(); } catch (error) { console.error('Could not save arrivals', error); }
+  }, 100);
   const heartbeat = setInterval(() => {
     for (const [key, limit] of limits) if (limit.until <= now()) limits.delete(key);
     for (const ws of wss.clients) {

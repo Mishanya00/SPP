@@ -1,6 +1,6 @@
 import { mkdirSync, readFileSync, openSync, writeFileSync, fsyncSync, closeSync, renameSync } from 'node:fs';
 import { join } from 'node:path';
-import { newWorld } from './game.js';
+import { newWorld, migrateWorld } from './game.js';
 
 export class Store {
   constructor(directory) {
@@ -8,7 +8,8 @@ export class Store {
     this.file = join(directory, 'galaxy.json');
     try {
       this.state = JSON.parse(readFileSync(this.file, 'utf8'));
-      if (this.state.version !== 1 || !this.state.users || !Array.isArray(this.state.contracts)) throw new Error('Unsupported save format');
+      if (![1, 2].includes(this.state.version) || !this.state.users || !Array.isArray(this.state.contracts)) throw new Error('Unsupported save format');
+      if (this.state.version === 1) { migrateWorld(this.state); this.persist(this.state); }
     } catch (error) {
       if (error.code !== 'ENOENT') throw error; // Never silently overwrite a damaged save.
       this.state = newWorld();

@@ -26,6 +26,11 @@ export const distance = (a, b) => Math.round(Math.hypot(a.x - b.x, a.y - b.y));
 export const fuelCost = (a, b) => Math.max(4, Math.ceil(distance(a, b) / 9));
 export const flightSeconds = (a, b, speed) => Math.max(5, Math.round(distance(a, b) / (22 * speed)));
 export const cargoUsed = player => player.contracts.reduce((sum, contract) => sum + contract.weight, 0);
-export const repairCost = player => (player.maxHull - player.hull) * 3;
+export const repairCost = player => Math.ceil((player.maxHull - player.hull) * 3);
 export const refuelCost = player => (80 - player.fuel) * 3;
 export const upgradeCost = player => 900 + player.upgrades * 650;
+
+export const SAFE_SYSTEMS = new Set(Object.values(RACES).map(race => race.home));
+export const ESCAPE_MS = 400;
+export const weaponDamage = player => ({ min: 2 + (player.weaponLevel || 0) * 1.5, max: 4.5 + (player.weaponLevel || 0) * 2.5 });
+export const weaponCost = player => 650 + (player.weaponLevel || 0) * 500;

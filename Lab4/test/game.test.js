@@ -24,7 +24,7 @@ test('50 unique systems, correct homes and connected galaxy for the shortest-ran
     assert.equal(STAR_BY_ID[player.location].name, expected[id]);
     assert.ok(player.credits >= race.money[0] && player.credits <= race.money[1]);
     assert.equal(player.capacity, race.cargo);
-    assert.equal(player.hull, race.hull);
+    assert.equal(player.hull, race.cargo);
   }
   const visited = new Set(['sol']), queue = [STAR_BY_ID.sol];
   while (queue.length) {
@@ -94,7 +94,7 @@ test('station services and recovery cannot strand or give free credits', () => {
   player.credits = 5000;
   player.fuel = 0; player.hull = 10;
   act('refuel'); assert.equal(player.fuel, 80); assert.equal(player.credits, 4760);
-  act('repair'); assert.equal(player.hull, player.maxHull); assert.equal(player.credits, 4490);
+  act('repair'); assert.equal(player.hull, player.maxHull); assert.equal(player.credits, 4694);
   const range = player.range, capacity = player.capacity;
   act('upgrade'); assert.equal(player.range, range + 35); assert.equal(player.capacity, capacity + 8);
   player.credits = 0; player.fuel = 0; player.hull = 10;

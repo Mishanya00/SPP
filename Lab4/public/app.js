@@ -1,8 +1,8 @@
-import { RACES, STARS, STAR_BY_ID, distance, fuelCost, flightSeconds, cargoUsed, refuelCost, repairCost, upgradeCost } from './shared.js';
+import { RACES, STARS, STAR_BY_ID, distance, fuelCost, flightSeconds, cargoUsed, refuelCost, repairCost, upgradeCost, SAFE_SYSTEMS, ESCAPE_MS, weaponDamage, weaponCost } from './shared.js';
 
 const $ = selector => document.querySelector(selector);
 const escapeHTML = value => String(value).replace(/[&<>"']/g, char => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[char]);
-const number = value => new Intl.NumberFormat('ru-RU').format(value);
+const number = value => new Intl.NumberFormat('ru-RU', { maximumFractionDigits: 1 }).format(value);
 const base = (window.STAR_ATLAS_SERVER || location.origin).replace(/\/$/, '');
 const prefix = `atlas:${base}:`;
 let storageAvailable = true;
@@ -16,6 +16,10 @@ let state = token ? storage.get(`snapshot:${token}`) : null;
 let pending = token ? storage.get(`pending:${token}`) : null;
 let socket, connected = false, reconnectTimer, attempts = 0, sentId = null, lastMessage = 0, clockOffset = 0;
 let selected = state?.player.location || 'sol', view = 'galaxy', tab = 'board', showRange = true, query = '', race = 'human', authMode = 'register';
+let interacting = false;
+document.addEventListener('pointerdown', () => { interacting = true; });
+window.addEventListener('pointerup', () => setTimeout(() => { interacting = false; render(); }, 0));
+window.addEventListener('pointercancel', () => { interacting = false; });
 let toastTimer, zoom = innerWidth <= 800 ? 2.4 : 1;
 let center = innerWidth <= 800 ? { ...STAR_BY_ID[selected] } : { x: 520, y: 360 };
 const disabled = condition => condition ? 'disabled' : '';
@@ -30,7 +34,7 @@ function toast(message, error = false) {
 function renderRaces() {
   $('#race-options').innerHTML = Object.entries(RACES).map(([id, item]) => `<button type="button" class="race-option ${race === id ? 'selected' : ''}" data-race="${id}" style="--race:${item.color}" aria-pressed="${race === id}"><span aria-hidden="true">${item.symbol}</span>${item.name}</button>`).join('');
   const item = RACES[race];
-  $('#race-details').innerHTML = `<h3>${item.ship} <span style="color:${item.color}">/ ${item.name}</span></h3><p>${item.description}</p><div class="race-stats"><span><small>СТАРТОВЫЙ КАПИТАЛ</small>${number(item.money[0])}–${number(item.money[1])} кр.</span><span><small>ТРЮМ</small>${item.cargo} т</span><span><small>РОДНАЯ СИСТЕМА</small>${STAR_BY_ID[item.home].name}</span></div>`;
+  $('#race-details').innerHTML = `<h3>${item.ship} <span style="color:${item.color}">/ ${item.name}</span></h3><p>${item.description}</p><div class="race-stats"><span><small>СТАРТОВЫЙ КАПИТАЛ</small>${number(item.money[0])}–${number(item.money[1])} кр.</span><span><small>ТРЮМ / HP</small>${item.cargo} т</span><span><small>РОДНАЯ СИСТЕМА</small>${STAR_BY_ID[item.home].name}</span></div>`;
 }
 function setAuthMode(mode) {
   authMode = mode;
@@ -154,7 +158,7 @@ function render() {
   $('#captain-name').textContent = p.username;
   $('#captain-avatar').textContent = RACES[p.race].symbol;
   $('#captain-avatar').style.color = RACES[p.race].color;
-  $('#ship-summary').textContent = `${RACES[p.race].ship} / ТОПЛИВО ${p.fuel} / ТРЮМ ${cargoUsed(p)} ИЗ ${p.capacity} Т`;
+  $('#ship-summary').textContent = `${RACES[p.race].ship} / HP ${number(p.hull)}/${p.maxHull} / ТОПЛИВО ${p.fuel} / ТРЮМ ${cargoUsed(p)} ИЗ ${p.capacity} Т`;
   $('#log-entries').innerHTML = p.log.slice(0, 3).map(entry => `<div class="log-entry"><time>${new Date(entry.at).toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit' })}</time><span>↗</span><span>${escapeHTML(entry.text)}</span></div>`).join('');
   connectionUI(); renderMap(); renderSide(); animate();
 }
@@ -166,17 +170,19 @@ function contractCard(contract, owned = false) {
   return `<article class="contract-card"><div class="contract-type"><span>ГРУЗОВОЙ КОНТРАКТ</span><span>${contract.weight} Т</span></div><h3>${contract.goods}</h3>${routeButton(contract.target)}<footer><span class="reward">+${number(contract.reward)} <small>кр.</small></span>${owned ? `<button class="accept-button ${canDeliver ? 'deliver' : ''}" data-action="deliver" data-contract="${contract.id}" ${disabled(busy() || !canDeliver)}>${canDeliver ? 'Сдать груз ↗' : 'В пути'}</button>` : `<button class="accept-button" data-action="accept" data-contract="${contract.id}" ${disabled(busy() || selected !== p.location || full)}>${full ? 'Трюм занят' : 'Принять ↗'}</button>`}</footer>${owned ? `<button class="discard" data-action="abandon" data-contract="${contract.id}" ${disabled(busy())}>Отменить заказ</button>` : ''}</article>`;
 }
 function service(title, detail, action, label, unavailable = false) {
-  return `<div class="service-row"><div><strong>${title}</strong><small>${detail}</small></div><button class="accept-button" data-action="${action}" ${disabled(busy() || unavailable)}>${label}</button></div>`;
+  return `<div class="service-row"><div><strong>${title}</strong><small>${detail}</small></div><button class="accept-button" data-action="${action}" ${disabled(busy() || Boolean(state.player.combatTarget) || unavailable)}>${label}</button></div>`;
 }
 function services() {
   const p = state.player;
   return service('Заправка', `${p.fuel} / 80 ед. · 3 кр. за единицу`, 'refuel', `${refuelCost(p)} кр.`, p.fuel === 80 || p.credits < refuelCost(p))
-    + service('Ремонт корпуса', `${p.hull} / ${p.maxHull} · 3 кр. за единицу`, 'repair', `${repairCost(p)} кр.`, p.hull === p.maxHull || p.credits < repairCost(p))
-    + service('Улучшение корабля', '+8 т трюм · +35 дальность · +15 корпус', 'upgrade', p.upgrades === 5 ? 'Максимум' : `${number(upgradeCost(p))} кр.`, p.upgrades === 5 || p.credits < upgradeCost(p))
+    + service('Ремонт трюма / HP', `${number(p.hull)} / ${p.maxHull} · 3 кр. за единицу`, 'repair', `${repairCost(p)} кр.`, p.hull === p.maxHull || p.credits < repairCost(p))
+    + service('Улучшение корабля', '+8 т трюм / HP · +35 дальность', 'upgrade', p.upgrades === 5 ? 'Максимум' : `${number(upgradeCost(p))} кр.`, p.upgrades === 5 || p.credits < upgradeCost(p))
+    + service('Улучшение оружия', `Урон ${weaponDamage(p).min}–${weaponDamage(p).max} HP/с · уровень ${(p.weaponLevel || 0) + 1}`, 'weapon', p.weaponLevel >= 5 ? 'Максимум' : `${number(weaponCost(p))} кр.`, p.weaponLevel >= 5 || p.credits < weaponCost(p))
     + ((p.fuel < 30 || p.hull <= 10) ? service('Аварийная помощь', 'Запас топлива и ремонт · доступно без денег', 'rescue', 'До 100 кр.') : '');
 }
-function meter(label, value, max) { return `<div class="data-row"><span>${label}</span><strong>${value} / ${max}</strong></div><div class="meter"><span style="width:${value / max * 100}%"></span></div>`; }
+function meter(label, value, max) { return `<div class="data-row"><span>${label}</span><strong>${number(value)} / ${max}</strong></div><div class="meter"><span style="width:${value / max * 100}%"></span></div>`; }
 function renderSide() {
+  if (interacting) return;
   if (!state) return;
   const p = state.player, star = STAR_BY_ID[selected] || STAR_BY_ID[p.location];
   document.querySelectorAll('[data-view]').forEach(button => button.classList.toggle('active', button.dataset.view === view));
@@ -184,22 +190,22 @@ function renderSide() {
   if (view === 'contracts') {
     html = `<div class="side-title"><div class="eyebrow">ЛИЧНЫЕ КОНТРАКТЫ / ${p.contracts.length} ИЗ 3</div><h2>Мои заказы</h2><p>Трюм: ${cargoUsed(p)} / ${p.capacity} т. Сдавайте груз в системе назначения.</p></div><div class="contract-list">${p.contracts.map(c => contractCard(c, true)).join('') || '<div class="empty-state"><strong>Впереди ваш первый рейс</strong>Выберите свою систему на карте и примите заказ на станции.</div>'}</div><div class="side-section"><div class="data-row"><span>Выполнено заказов</span><strong>${p.completed}</strong></div><div class="data-row"><span>Всего заработано</span><strong>${number(p.earned)} кр.</strong></div></div>`;
   } else if (view === 'ship') {
-    html = `<div class="side-title"><div class="eyebrow">${RACES[p.race].name.toUpperCase()} / УРОВЕНЬ ${p.upgrades + 1}</div><h2>${RACES[p.race].ship}</h2><p>Капитан ${escapeHTML(p.username)}</p>${svgShip}</div><div class="side-section">${meter('Топливо', p.fuel, 80)}${meter('Прочность корпуса', p.hull, p.maxHull)}${meter('Загрузка трюма', cargoUsed(p), p.capacity)}<div class="data-row"><span>Дальность прыжка</span><strong>${p.range} св. л.</strong></div><div class="data-row"><span>Исследовано систем</span><strong>${p.visited.length} / 50</strong></div></div><div class="side-section"><div class="section-title"><h2>Обслуживание корабля</h2></div>${services()}</div>`;
+    html = `<div class="side-title"><div class="eyebrow">${RACES[p.race].name.toUpperCase()} / УРОВЕНЬ ${p.upgrades + 1}</div><h2>${RACES[p.race].ship}</h2><p>Капитан ${escapeHTML(p.username)}</p>${svgShip}</div><div class="side-section">${meter('Топливо', p.fuel, 80)}${meter('Трюм / здоровье (HP)', p.hull, p.maxHull)}${meter('Загрузка трюма', cargoUsed(p), p.capacity)}<div class="data-row"><span>Дальность прыжка</span><strong>${p.range} св. л.</strong></div><div class="data-row"><span>Исследовано систем</span><strong>${p.visited.length} / 50</strong></div></div><div class="side-section"><div class="section-title"><h2>Обслуживание корабля</h2></div>${services()}</div>`;
   } else if (view === 'pilots') {
     const pilots = [...state.pilots].sort((a, b) => Number(b.online) - Number(a.online) || b.completed - a.completed);
-    html = `<div class="side-title"><div class="eyebrow">ОБЩАЯ ГАЛАКТИКА</div><h2>Капитаны</h2><p>${pilots.filter(p => p.online).length} в сети · ${pilots.length} зарегистрировано</p></div><div class="side-section">${pilots.map(pilot => `<div class="pilot-row ${pilot.online ? '' : 'offline'}"><span class="pilot-symbol" style="--race:${RACES[pilot.race].color}">${RACES[pilot.race].symbol}</span><div><strong>${escapeHTML(pilot.username)} ${pilot.id === p.id ? '· вы' : ''}</strong><small>${pilot.journey ? 'В гиперпространстве' : STAR_BY_ID[pilot.location].name} · ${pilot.completed} рейсов</small></div>${pilot.online ? '<span class="tiny-dot"></span>' : ''}</div>`).join('')}</div>`;
+    html = `<div class="side-title"><div class="eyebrow">ОБЩАЯ ГАЛАКТИКА</div><h2>Капитаны</h2><p>${pilots.filter(p => p.online).length} в сети · ${pilots.length} зарегистрировано</p></div><div class="side-section">${pilots.map(pilot => `<div class="pilot-row ${pilot.online ? '' : 'offline'}"><span class="pilot-symbol" style="--race:${RACES[pilot.race].color}">${RACES[pilot.race].symbol}</span><div><strong>${escapeHTML(pilot.username)} ${pilot.id === p.id ? '· вы' : ''}</strong><small>${pilot.journey ? 'В гиперпространстве' : STAR_BY_ID[pilot.location].name} · ${number(pilot.hull)} / ${pilot.maxHull} HP</small></div>${pilot.online ? '<span class="tiny-dot"></span>' : ''}</div>`).join('')}</div>`;
   } else {
     const home = star.id === p.location;
     const dist = distance(STAR_BY_ID[p.location], star);
     const outOfRange = dist > p.range;
     const jumpLabel = p.journey ? 'Гиперпрыжок выполняется…' : home ? 'Вы в этой системе' : outOfRange ? 'Вне дальности двигателя' : p.fuel < fuelCost(STAR_BY_ID[p.location], star) ? 'Недостаточно топлива' : 'Гиперпрыжок';
-    html = `<div class="side-title"><div class="eyebrow">${star.capital ? 'СТОЛИЧНАЯ' : 'ЗВЁЗДНАЯ'} СИСТЕМА</div><div class="system-visual" aria-hidden="true"><div class="mini-planet" style="--race:${RACES[star.race].color}"></div><span class="planet-moon"></span></div><h2>${star.name}</h2><p><span style="color:${RACES[star.race].color}">${RACES[star.race].symbol}</span> ${RACES[star.race].name} · ${star.economy}</p>${home ? '<span class="system-badge">⌖ Ваш корабль здесь</span>' : ''}</div><div class="side-section"><div class="data-row"><span>Расстояние</span><strong>${home ? 'На орбите' : `${dist} св. л.`}</strong></div><div class="data-row"><span>Топливо на прыжок</span><strong>${home ? '—' : `${fuelCost(STAR_BY_ID[p.location], star)} ед.`} <span style="color:var(--muted)">/ ${p.fuel} в баке</span></strong></div><div class="data-row"><span>Время перелёта</span><strong>${home ? '—' : `${flightSeconds(STAR_BY_ID[p.location], star, p.speed)} сек.`}</strong></div><button class="button primary" data-action="jump" data-target="${star.id}" ${disabled(busy() || home || outOfRange || p.fuel < fuelCost(STAR_BY_ID[p.location], star) || p.hull <= 10)}>${jumpLabel}<span>↗</span></button></div><div class="tabs"><button data-tab="board" class="${tab === 'board' ? 'active' : ''}">Заказы станции</button><button data-tab="services" class="${tab === 'services' ? 'active' : ''}">Обслуживание</button></div>`;
+    html = `<div class="side-title"><div class="eyebrow">${star.capital ? 'СТОЛИЧНАЯ' : 'ЗВЁЗДНАЯ'} СИСТЕМА</div><div class="system-visual" aria-hidden="true"><div class="mini-planet" style="--race:${RACES[star.race].color}"></div><span class="planet-moon"></span></div><h2>${star.name}</h2><p><span style="color:${RACES[star.race].color}">${RACES[star.race].symbol}</span> ${RACES[star.race].name} · ${star.economy}</p>${home ? '<span class="system-badge">⌖ Ваш корабль здесь</span>' : ''}</div><div class="side-section"><div class="data-row"><span>Расстояние</span><strong>${home ? 'На орбите' : `${dist} св. л.`}</strong></div><div class="data-row"><span>Топливо на прыжок</span><strong>${home ? '—' : `${fuelCost(STAR_BY_ID[p.location], star)} ед.`} <span style="color:var(--muted)">/ ${p.fuel} в баке</span></strong></div><div class="data-row"><span>Время перелёта</span><strong>${home ? '—' : `${flightSeconds(STAR_BY_ID[p.location], star, p.speed)} сек.`}</strong></div><button class="button primary" data-action="jump" data-target="${star.id}" ${disabled(busy() || home || outOfRange || p.fuel < fuelCost(STAR_BY_ID[p.location], star))}>${jumpLabel}<span>↗</span></button></div><div class="tabs"><button data-tab="board" class="${tab === 'board' ? 'active' : ''}">Заказы станции</button><button data-tab="services" class="${tab === 'services' ? 'active' : ''}">Обслуживание</button></div>`;
     if (tab === 'board') {
       const contracts = state.contracts.filter(c => c.origin === star.id);
       html += `<div class="contract-list">${!home ? '<p class="empty-state">Для принятия заказа прилетите в эту систему.</p>' : ''}${contracts.map(c => contractCard(c)).join('') || '<div class="empty-state">Все заказы разобраны капитанами. Новые появятся после завершения доставок.</div>'}</div>`;
     } else html += `<div class="side-section">${home ? services() : '<p class="empty-state">Услуги станции доступны после прибытия.</p>'}</div>`;
   }
-  $('#side-content').innerHTML = html;
+  $('#side-content').innerHTML = combatPanel() + html;
 }
 function setView(next) { view = next; renderSide(); if (innerWidth <= 800) $('.side-panel').scrollIntoView({ behavior: 'smooth', block: 'start' }); }
 document.querySelectorAll('[data-view]').forEach(button => button.onclick = () => setView(button.dataset.view));
@@ -223,6 +229,7 @@ $('#side-content').onclick = event => {
 };
 
 function renderMap() {
+  if (interacting) return;
   if (!state) return;
   const p = state.player, here = STAR_BY_ID[p.location], target = STAR_BY_ID[selected];
   let svg = `<defs><filter id="glow"><feGaussianBlur stdDeviation="3" result="blur"/><feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge></filter><pattern id="grid" width="80" height="80" patternUnits="userSpaceOnUse"><path d="M80 0H0V80" fill="none" stroke="#cadab608" stroke-width=".6"/><path d="M0 0h4m-4 0v4" stroke="#c2d4b018"/></pattern></defs><rect width="1040" height="720" fill="url(#grid)"/>`;
@@ -309,3 +316,13 @@ renderRaces();
 if (state && token) { $('#onboarding').classList.add('hidden'); $('#game').classList.remove('hidden'); render(); }
 if (token) connect();
 if ('serviceWorker' in navigator) navigator.serviceWorker.register('./sw.js').catch(() => { /* Server-side progress remains available without shell caching. */ });
+
+function combatPanel() {
+  const p = state.player;
+  const safe = SAFE_SYSTEMS.has(p.location);
+  const time = Date.now() + clockOffset;
+  const local = state.pilots.filter(other => other.id !== p.id && other.location === p.location && (!other.journey || time < other.journey.startedAt + ESCAPE_MS));
+  const enemies = local.filter(other => other.combatTarget === p.id || p.combatTarget === other.id);
+  const damage = weaponDamage(p);
+  return `<section class="combat-panel ${p.combatTarget ? 'fighting' : ''}"><div class="section-title"><h2>${safe ? '◈ Безопасная система' : p.combatTarget ? '⚔ Бой' : '⚔ PvP-система'}</h2><span>${number(p.hull)} / ${p.maxHull} HP</span></div><p>Оружие: ${damage.min}–${damage.max} HP/с · ур. ${(p.weaponLevel || 0) + 1}</p>${p.combatTarget ? '<p class="combat-warning">Ремонт недоступен. Прыжок выводит из боя через 0,4 с.</p>' : ''}${safe ? '<p>Нападения запрещены для всех капитанов.</p>' : local.map(other => `<div class="combat-opponent"><div><strong>${escapeHTML(other.username)}</strong><small>${number(other.hull)} / ${other.maxHull} HP · ${weaponDamage(other).min}–${weaponDamage(other).max} HP/с</small></div><button class="accept-button" data-action="${enemies.some(e => e.id === other.id) ? 'target' : 'attack'}" data-target="${other.id}" ${disabled(busy() || p.combatTarget === other.id)}>${p.combatTarget === other.id ? 'Цель' : enemies.some(e => e.id === other.id) ? 'Выбрать' : 'Атаковать'}</button></div>`).join('') || '<p>Других кораблей в системе нет.</p>'}</section>`;
+}
